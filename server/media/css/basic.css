@@ -1,0 +1,29 @@
+body {
+	background-image: url('/media/images/body_bg.png');
+	background-repeat: repeat;
+}
+
+#page {
+    margin: 0px auto 0px auto;	
+	width:1000px;
+	border: 1px solid #BBB;
+	background-color:white;
+}
+
+#content{
+	padding:10px;	
+}
+
+#head{
+	padding: 10px;
+	color: #555;
+	background-color: #BBB;	
+}
+
+#head-right{
+	float: right;	
+}
+
+#head a, #head a:hover{
+	color: #555;
+}

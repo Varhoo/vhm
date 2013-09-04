@@ -1,0 +1,41 @@
+{% extends "basic.html" %}
+
+
+{% block content %}
+
+ {{forms.error}}
+<form action="?new=ticket"" method="POST">{% csrf_token %}
+Název: {{ forms.ticket.title }}<br/>
+Text: {{ forms.ticket.text }}<br/>
+Skupina: {{forms.ticket.group}}<br/>
+Vlastník: {{forms.ticket.owner}}<br/>
+Autor: {{forms.ticket.author}} <br/>
+Status:  {{forms.ticket.status}} <br/> 
+Prorita: {{forms.ticket.priority}} <br/>
+<input type="submit" value="Odeslat">
+</form>
+
+<!-- 
+<h3>Komentáře:</h3>
+
+<div class="comments">
+{% for comment in comments %}
+<div class="comment">
+Komentář byl vytvořen uživatelem {{comment.author}} {{comment.pub_date}} {{comment.is_public}}<br/>
+{{comment.text}}
+</div>
+{% empty %}
+Nebyl přidán žádný komentář
+{% endfor %}
+</div>
+
+<div class="form-new">
+<form action="?new=comment" method="POST">
+{% csrf_token %}
+Je veřejný: {{ forms.comment.is_public }}<br/>
+{{ forms.comment.text }}
+<input type="submit" value="Odeslat">
+</div>
+ -->
+
+{% endblock %} 
