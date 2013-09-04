@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Ticket system - Varhoo</title>
+<meta name="description" content="" />
+<link rel="stylesheet" type="text/css" href="/media/css/basic.css" />
+<script type="text/javascript" src="http://code.varhoo.cz/jquery/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="/media/js/basic.js"></script>
+</head>
+<body>
+<div id="page">
+
+<div id="head">
+<div id="head-right">{{user.get_full_name}} ({{user.username}}) | <a href="/admin/logout/">odhlásit</a></div>
+
+<h1>Tiketovací systém</h1>
+<a href="{% url tickets_all %}">Všechny tikety</a>
+<a href="{% url ticket_new %}">Vytvořit tiket</a>
+</div>
+
+<div id="content">
+{% block content %}
+
+{% endblock %} 
+</div>
+</div>
+</body>
+</html>

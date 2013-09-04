@@ -1,0 +1,43 @@
+{% extends "basic.html" %}
+
+
+{% block content %}
+
+<h2>#{{ticket.id}} {{ ticket.title }}</h2>
+{{ ticket.pub_date }}
+<p>{{ ticket.text }}</p>
+<form action="?edit=ticket"" method="POST">{% csrf_token %}
+Skupina: {{ticket.group}} {{forms.ticket.group}}<br/>
+Vlastník: {{ ticket.owner }} {{forms.ticket.owner}}<br/>
+Autor: {{ ticket.author }} <br/>
+Status: {{ ticket.enum_status }} {{forms.ticket.status}} <br/>
+Prorita: {{ ticket.enum_priority }} {{forms.ticket.priority}} <br/>
+<input type="submit" value="Odeslat">
+</form>
+
+<h3>Komentáře:</h3>
+
+<div class="comments">
+{% for comment in comments %}
+<div class="comment">
+<small>Komentář byl vytvořen uživatelem {{comment.author}} <br/>
+{{comment.pub_date}} {{comment.is_public}}<br/></small>
+<p>{{comment.text}}</p>
+{% if comment.get_file_url %}<a href="{{comment.get_file_url}}" target="new">{{comment.upload_file}}</a>{%endif%}
+</div>
+{% empty %}
+Nebyl přidán žádný komentář
+{% endfor %}
+</div>
+
+<div class="form-new">
+<form action="?new=comment" method="POST" enctype="multipart/form-data"  >
+{% csrf_token %}
+Je veřejný: {{ forms.comment.is_public }}<br/>
+{{ forms.comment.text }}<br/>
+{{ forms.comment.upload_file }}
+<input type="submit" value="Odeslat">
+</div>
+
+
+{% endblock %} 

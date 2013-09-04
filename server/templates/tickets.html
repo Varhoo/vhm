@@ -1,0 +1,20 @@
+{% extends "basic.html" %}
+
+
+{% block content %}
+<table border="1">
+<tr>
+<th>Id</th><th>Název</th><th>Skupina</th><th>Priorita</th><th>Status</th><th>Datum</th>
+</tr>
+{% for it in tickets %}
+<tr>
+<td><a href="{{ it.get_absolute_url }}">{{ it.id }}</a></td>
+<td>{{ it.title }}</td>
+<td>{{ it.group }}</td>
+<td>{{ it.enum_priority }}</td>
+<td>{{ it.enum_status }}</td>
+<td>{{ it.pub_date }}</td>
+</tr> 
+{% endfor %}
+</table>
+{% endblock %} 
