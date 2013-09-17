@@ -54,16 +54,19 @@ class FtpuserAdmin(admin.ModelAdmin):
 
     
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name','path','sizeformat')
-#    fieldsets = (
-#        (None, {
-#            'fields': ('name', 'path', ('django_wsgi','is_valid'))
-#        }),
-#        ('Advanced options', {
-#            'classes': ('collapse',),
-#            'fields': ('last_modify','comment')
-#        }),
-#    )
+    list_display = ('name', 'path', 'sizeformat', 'account_type', 'last_invoice_date', 'is_pay')
+    fieldsets = (
+        (None, {
+            'fields': 
+                ( ('owner', 'account_type'), 'server', 
+                'name', 'path', 'size' )
+        }),
+        ('Advanced options', {
+            'classes': ('collapse',),
+            'fields': ('user', ('uid','gid'), 'token',)
+        }),
+    )
+    readonly_fields = ['size', 'token' ]
     inlines = [FtpuserInLine, ]
 
 
@@ -71,10 +74,11 @@ class ApacheAliasAdmin(admin.ModelAdmin):
     #list_display = ('account','site','django_wsgi','is_valid','power')
     fieldsets = (
         (None, {
-            'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
+            'fields':
+                ('account', 'site', ('django_wsgi', 'is_valid', 'power'), 
+                ('repo_type', 'repo_version'), 'repo_url', 'note', 'comment')
         }),)
     inlines = [AliasInline, ]
-
 
 
 class InvoiceAdmin(admin.ModelAdmin):
@@ -88,7 +92,9 @@ class InvoiceAdmin(admin.ModelAdmin):
     ordering = ['-date']
 
     def save_model(self, request, obj, form, change):
-        obj.price = obj.size * obj.month * self.price_enum(obj.size)
+        obj.price = obj.size * obj.month * self.price_enum(obj.size) 
+        # discount for order
+        obj.price = obj.price * ( 1 - obj.sale/100.0 )
         obj.save()
 
     

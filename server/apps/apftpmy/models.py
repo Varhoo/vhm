@@ -12,6 +12,7 @@ from filebrowser.fields import FileBrowseField
 from apps.apftpmy.utils import *
 from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 POWER_ENUM = (
   (1, "Low"), 
@@ -20,17 +21,22 @@ POWER_ENUM = (
 )
 
 REPOS_ENUM = (
-  (0,"None"), 
-  (1,"SVN"),
-  (2,"GIT"),
+  (0, _("None")), 
+  (1, _("SVN")),
+  (2, _("GIT")),
 )
 OS_ENUM = (
-  (0,"Ubuntu/Debian"), 
-  (1,"Fedora/CentOS/RHEL"),
+  (0, _("Ubuntu/Debian")), 
+  (1, _("Fedora/CentOS/RHEL")),
 )
-#i18n
-from django.utils.translation import ugettext_lazy as _
-# Create your models here.
+TYPE_ENUM_PRIVATE = 0
+TYPE_ENUM_FREE = 1
+TYPE_ENUM_C0MMERCIAL = 2
+TYPE_ENUM = (
+  (TYPE_ENUM_PRIVATE, _("Private")), 
+  (TYPE_ENUM_FREE, _("Free")),
+  (TYPE_ENUM_C0MMERCIAL, _("Commercial")),
+)
 
 class Domain(models.Model):
     owner = models.ForeignKey(User)
@@ -67,7 +73,8 @@ class Server(models.Model):
 
 class Account(models.Model):
     owner = models.ForeignKey(User)
-    name = models.SlugField(_("Name"),max_length=64,unique=True)
+    account_type = models.IntegerField(choices=TYPE_ENUM, default=0);
+    name = models.SlugField(_("Name"), max_length=64,unique=True)
     path = models.CharField(max_length=64, help_text="Určuje cestu k webove prezentaci %s" % settings.APACHE_DIR_LOCATION)
     size = models.IntegerField(_('Size'), default=0)
     token = models.CharField(max_length=50, default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
@@ -85,6 +92,25 @@ class Account(models.Model):
     class META:
         verbose_name = _('Account')
         verbose_name_plurar = _('Acounts')
+
+    def last_invoice(self):
+        invoice = Invoice.objects.filter(account=self, is_paid=True).order_by("-date")[:1]
+        if invoice:
+            return invoice[0]
+
+    def last_invoice_date(self):
+        li = self.last_invoice()
+        if li:
+            return li.date
+
+    def is_pay(self):
+        if self.account_type!=TYPE_ENUM_C0MMERCIAL:
+            return True
+        li = self.last_invoice()
+        if li.next_pay() > datetime.now().date():
+            return True
+        return False
+    is_pay.boolean = True
 
 
 class ApacheAlias(models.Model):
@@ -151,7 +177,10 @@ class Invoice(models.Model):
     file = FileBrowseField("File", max_length=200, blank=True, null=True)
 
     def date_end(self):
-        return (self.date + timedelta(self.month*365/12)).strftime("%d. %m. %Y")
+        return self.next_pay().strftime("%d. %m. %Y")
+
+    def next_pay(self):
+        return (self.date + timedelta(self.month*365/12))
 
     def __unicode__(self):
         return "%s %s" % (self.account, self.date.isoformat())
