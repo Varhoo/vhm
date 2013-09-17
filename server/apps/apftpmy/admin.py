@@ -67,6 +67,7 @@ class AccountAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ['size', 'token' ]
+    ordering= ['-account_type',]
     inlines = [FtpuserInLine, ]
 
 
