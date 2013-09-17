@@ -84,7 +84,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         else:
             return 199
 
-    list_display = ('account', 'date', 'date_end', 'size', 'price')
+    list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid')
     ordering = ['-date']
 
     def save_model(self, request, obj, form, change):

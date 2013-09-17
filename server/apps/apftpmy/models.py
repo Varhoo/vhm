@@ -147,6 +147,7 @@ class Invoice(models.Model):
     size = models.IntegerField(help_text="Počet pronajatých GB", default=1)
     sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy", default=0)
     price = models.IntegerField(help_text="Celková suma se slevou", default=0)
+    is_paid = models.BooleanField(default=False)
     file = FileBrowseField("File", max_length=200, blank=True, null=True)
 
     def date_end(self):
