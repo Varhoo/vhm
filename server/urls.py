@@ -1,16 +1,13 @@
+# coding: utf-8
+
 from django.conf.urls.defaults import *
+from filebrowser.sites import site
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-import settings
-
-#try:
-#    from filebrowser.sites import site;
-#    urlpatterns = patterns('', url(r'^admin/filebrowser/', include(site.urls)))
-#except ImportError:
-#    urlpatterns = patterns('', url(r'^admin/filebrowser/', include("filebrowser.urls")))
 
 urlpatterns = patterns('',
     url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:],
@@ -26,9 +23,9 @@ urlpatterns = patterns('',
     (r'^openid/', include('apps.consumer.urls')),
     (r'^$','apps.auth.views.index'),
     (r'^ticket/', include('apps.ticket.urls')),
-    (r'^admin/login/','apps.auth.views.index'),
-    #(r'^admin/grappelli/', include('grappelli.urls')),
-    #(r'^admin/filebrowser/', include('filebrowser.urls')),
+    #(r'^admin/login/','apps.auth.views.index'),
+    (r'^admin/grappelli/', include('grappelli.urls')),
+    (r'^admin/filebrowser/', include(site.urls)),
     # Uncomment the next line to enable the admin:
     (r'^xmlrpc/$', 'apps.xmlrpc.models.rpc_handler'),
     (r'^admin/', include(admin.site.urls)),

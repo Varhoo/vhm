@@ -7,7 +7,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from apps.apftpmy.models import *
-import settings
+from django.conf import settings
 from django.db import models
 from datetime import datetime, date
 from django.utils.translation import ugettext_lazy as _
@@ -18,12 +18,14 @@ STATUS_ENUM = (
    (2, "Done"),
    (3, "Error"),
 )
+
 #model for check
 class Action(models.Model):
     account = models.ForeignKey(Account)
-    last_modify = models.DateTimeField(_('Last Modify'),default=datetime.now)
+    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
     command = models.IntegerField();
     status = models.IntegerField(default=0);
+
  
 class ActionServer(models.Model):
     server = models.ForeignKey(Server)
@@ -98,6 +100,15 @@ def get_all_repo(token):
                  "repo_type": it.repo_type, "name": it.account.name, 
                  "user": it.account.user} for it in data]
 
+
+def get_all_projects(token):
+        r = check_auth_host(token)
+        if r == False:
+            return r
+        accounts = ProjectSetting.objects.filter(account__server__token=token, is_enabled=True)
+        return [{"id": it.id, "name": it.account.name, "path": it.get_path(), "mode": it.mode,  
+                 "user": it.account.user, "group": it.get_group() } for it in accounts]
+
 def set_account_size(token,id,size):
         r = check_auth_host(token)
         if r == False:
@@ -166,6 +177,7 @@ def action_server_status(token,id,status,exit_code=None):
 # the dispatcher then maps the args down.
 # The first argument is the actual method, the second is what to call it from the XML-RPC side...
 dispatcher.register_function(get_all_account, 'get_all_account')
+dispatcher.register_function(get_all_projects, 'get_all_projects')
 dispatcher.register_function(set_account_size, 'set_account_size')
 #function get all data of account with repository
 dispatcher.register_function(get_all_repo, 'get_all_repo')

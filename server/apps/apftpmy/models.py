@@ -60,7 +60,7 @@ class Domain(models.Model):
 
 
 class Server(models.Model):
-    hostname = models.SlugField(_("Hostaname"),max_length=64,unique=True)
+    hostname = models.CharField(_("Hostaname"),max_length=64,unique=True)
     description = models.TextField(_("Description"))
     os_type = models.IntegerField(choices=OS_ENUM);
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
@@ -77,7 +77,7 @@ class Account(models.Model):
     owner = models.ForeignKey(User)
     server = models.ForeignKey(Server)
     name = models.SlugField(_("Name"), max_length=64,unique=True)
-    path = models.CharField(max_length=64, help_text="Určuje cestu k webove prezentaci %s" % settings.APACHE_DIR_LOCATION)
+    path = models.CharField(max_length=64, help_text="Určuje cestu k webove prezentaci %s" % settings.APACHE_DIR_LOCATION, default=settings.APACHE_DIR_LOCATION)
     size = models.IntegerField(_('Size'), default=0)
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
     user = models.SlugField()
@@ -99,20 +99,29 @@ class Project(models.Model):
     account = models.ForeignKey(Account)
     owner = models.ForeignKey(User)
     site = models.CharField(max_length=126)
+    path = models.CharField(max_length=126)
     is_enabled = models.BooleanField(_('Is valid'))
-    created = models.DateTimeField(_('Created'), default=datetime.now )
-    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now, blank=True)
+    created = models.DateTimeField(_('Created'), default=datetime.now() )
+    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now(), blank=True)
     note = models.TextField(_('Note'), blank=True)
+
+    def get_path(self):
+        return "%s/%s" % (self.account.path, self.path )
+
+    def get_group(self):
+        return settings.APACHE_GROUP
 
     def __unicode__(self):
         return self.site
 
+
 class ProjectSetting(Project):
-    repo_type = models.IntegerField(choices=REPOS_ENUM,default=0);
-    repo_url = models.CharField(_('Svn update'), max_length=255, null=True, blank=True)
+    repo_type = models.IntegerField(choices=REPOS_ENUM, default=0);
+    repo_url = models.CharField(_('Repo update'), max_length=255, null=True, blank=True)
     repo_version = models.CharField(_('Version id/hash'), max_length=128, null=True, blank=True)
     comment = models.TextField(_('Comment'), blank=True)
     power = models.IntegerField(choices=POWER_ENUM,default=1);
+    last_update = models.DateTimeField(_('Last Update'), null=True, blank=True)
 
     mode = models.IntegerField('mode', choices=MODE_ENUM)
     mode_params = models.CharField(max_length=256, null=True, blank=True)
@@ -142,14 +151,25 @@ class Ftpuser(models.Model):
         db_table = "ftpusers"
 
 
+class Customer(models.Model):
+    name = models.CharField(max_length=200)
+    tel = models.CharField(max_length=20)
+    email = models.EmailField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Invoice(models.Model):
-    date = models.DateField()
+    user = models.ForeignKey(Customer)
+    account = models.ForeignKey(Account)
+    date = models.DateField(default=datetime.now())
     month = models.IntegerField(help_text="Pocet zaplacenych mesicu služby")
     size = models.IntegerField(help_text="Počet pronajatých GB")
-    sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy")
-    price = models.IntegerField(help_text="Celková suma se slevou")
-    account = models.ForeignKey(Account)
+    sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy", default=0)
+    price = models.IntegerField(help_text="Celková suma se slevou", default=0)
     file = FileBrowseField("File", max_length=200, blank=True, null=True)
+    is_paid = models.BooleanField(default=False) 
 
     def date_end(self):
         return (self.date + timedelta(self.month*365/12)).strftime("%d. %m. %Y")
@@ -157,13 +177,4 @@ class Invoice(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.account, self.date.isoformat())
 
-
-class Customer(models.Model):
-    user = models.ForeignKey(User)
-    tel = models.IntegerField(max_length=20)
-    email = models.IntegerField(max_length=200)
-    invoice = models.ManyToManyField('Invoice')
-
-    def __unicode__(self):
-        return self.nazev
 

@@ -30,17 +30,8 @@ class MultiDBModelAdmin(admin.ModelAdmin):
         return super(MultiDBModelAdmin, self).formfield_for_manytomany(db_field, request=request, using=self.using, **kwargs)
 
 
-#from django.db import connections
-#cursor = connections['ftpuser'].cursor()
-
-
-class ApacheInline(admin.TabularInline):
-    model = ApacheAlias
-    extra = 1
-
-
 class AliasInline(admin.TabularInline):
-    model = AccountAlias
+    model = DomainAlias
     extra = 0
 
 
@@ -67,27 +58,34 @@ class AccountAdmin(admin.ModelAdmin):
     inlines = [FtpuserInLine, ]
 
 
-class ApacheAliasAdmin(admin.ModelAdmin):
-    #list_display = ('account','site','django_wsgi','is_valid','power')
-    fieldsets = (
-        (None, {
-            'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
-        }),)
+class ProjectSettingAdmin(admin.ModelAdmin):
+    list_display = ('account', 'site', 'mode', 'power', 'repo_type', 'last_update', 'is_enabled',)
+    #fieldsets = (
+    #    (None, {
+    #        'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
+    #    }),)
     inlines = [AliasInline, ]
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-
-    list_display = ('account','date','date_end','size')
+    list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid') 
+    fieldsets = (
+        (None, {
+            'fields':
+                ('account', 'user', 'date', ('month', 'size', 'sale'), 'price',
+                'is_paid', 'file', )
+        }),) 
+    readonly_fields = ['price', ]  
 
     
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('name','expirate','description','check_pay')
     ordering = ['expirate',]
 
-admin.site.register(ApacheAlias, ApacheAliasAdmin)
+admin.site.register(DomainAlias)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Ftpuser, FtpuserAdmin)
 admin.site.register(Server)
+admin.site.register(ProjectSetting, ProjectSettingAdmin)
 admin.site.register(Domain, DomainAdmin)

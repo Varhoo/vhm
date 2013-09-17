@@ -14,9 +14,11 @@ import compiler #parse python file
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 sys.path.append(ROOT_PATH)
 
-from apps.xmlrpc.utils.vhlib_server import *
-from apps.xmlrpc.utils.vhlib_client import *
+from vhlib_server import *
+from vhlib_client import *
 #from django.core.mail import send_mail
+
+import ConfigParser
 
 ROOT_PATH = "/var/www/"
 SMTP_USERNAME = "bot@varhoo.cz"
@@ -160,11 +162,22 @@ def update_repo_svn(data):
     
 
 if __name__ == "__main__":
-    srv = ServerApp("admin.varhoo.cz")
+    #srv = ServerApp("admin.varhoo.cz")
     # for testing on localhost
-    # srv = ServerApp("localhost:8000")
+    config = ConfigParser.ConfigParser()
+    config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
+    token = config.get("client", "token")
+    server = config.get("client", "server")
+
+    srv = ServerApp(server)
+    srv.login(token)
+    data =  srv.get_all_projects()
+    print data
+    sys.exit(0)
+
     data =  srv.get_all_account()
     count = 0
+
 
     # update all projects
     for it in data:
