@@ -29,10 +29,12 @@ OS_ENUM = (
   (0, _("Ubuntu/Debian")), 
   (1, _("Fedora/CentOS/RHEL")),
 )
+TYPE_ENUM_DISABLE = -1
 TYPE_ENUM_PRIVATE = 0
 TYPE_ENUM_FREE = 1
 TYPE_ENUM_C0MMERCIAL = 2
 TYPE_ENUM = (
+  (TYPE_ENUM_DISABLE, _("Disable")),
   (TYPE_ENUM_PRIVATE, _("Private")), 
   (TYPE_ENUM_FREE, _("Free")),
   (TYPE_ENUM_C0MMERCIAL, _("Commercial")),
