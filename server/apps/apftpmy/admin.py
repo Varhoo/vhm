@@ -85,6 +85,7 @@ class InvoiceAdmin(admin.ModelAdmin):
             return 199
 
     list_display = ('account', 'date', 'date_end', 'size', 'price')
+    ordering = ['-date']
 
     def save_model(self, request, obj, form, change):
         obj.price = obj.size * obj.month * self.price_enum(obj.size)
