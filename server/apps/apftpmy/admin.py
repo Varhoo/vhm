@@ -87,10 +87,17 @@ class InvoiceAdmin(admin.ModelAdmin):
         if size < 10:
             return 49
         else:
-            return 199
+            return 19.9
 
     list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid')
+    fieldsets = (
+        (None, {
+            'fields':
+                ('account', 'user', 'date', ('month', 'size', 'sale'), 'price',
+                'is_paid', 'file', )
+        }),)
     ordering = ['-date']
+    readonly_fields = ['price', ]
 
     def save_model(self, request, obj, form, change):
         obj.price = obj.size * obj.month * self.price_enum(obj.size) 
