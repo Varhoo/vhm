@@ -76,9 +76,19 @@ class ApacheAliasAdmin(admin.ModelAdmin):
     inlines = [AliasInline, ]
 
 
-class InvoiceAdmin(admin.ModelAdmin):
 
-    list_display = ('account','date','date_end','size')
+class InvoiceAdmin(admin.ModelAdmin):
+    def price_enum(self, size):
+        if size < 10:
+            return 49
+        else:
+            return 199
+
+    list_display = ('account', 'date', 'date_end', 'size', 'price')
+
+    def save_model(self, request, obj, form, change):
+        obj.price = obj.size * obj.month * self.price_enum(obj.size)
+        obj.save()
 
     
 class DomainAdmin(admin.ModelAdmin):

@@ -50,8 +50,9 @@ class Domain(models.Model):
         verbose_name = _('Domain')
         verbose_name_plurar = _('Domains')
 
+
 class Server(models.Model):
-    hostname = models.SlugField(_("Hostaname"),max_length=64,unique=True)
+    hostname = models.CharField(_("Hostaname"),max_length=64,unique=True)
     description = models.TextField(_("Description"))
     os_type = models.IntegerField(choices=OS_ENUM);
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
@@ -63,15 +64,16 @@ class Server(models.Model):
         verbose_name = _('Server')
         verbose_name_plurar = _('Servers')
 
+
 class Account(models.Model):
     owner = models.ForeignKey(User)
     name = models.SlugField(_("Name"),max_length=64,unique=True)
     path = models.CharField(max_length=64, help_text="Určuje cestu k webove prezentaci %s" % settings.APACHE_DIR_LOCATION)
-    size = models.IntegerField(_('Size'),default=0)
-    token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
+    size = models.IntegerField(_('Size'), default=0)
+    token = models.CharField(max_length=50, default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
     user = models.SlugField()
-    uid = models.IntegerField(blank=True,null=True)
-    gid = models.IntegerField(blank=True,null=True)
+    uid = models.IntegerField(blank=True, null=True)
+    gid = models.IntegerField(blank=True, null=True)
     server = models.ForeignKey(Server)
 
     def sizeformat(self):
@@ -83,6 +85,7 @@ class Account(models.Model):
     class META:
         verbose_name = _('Account')
         verbose_name_plurar = _('Acounts')
+
 
 class ApacheAlias(models.Model):
     account = models.ForeignKey(Account)
@@ -102,12 +105,14 @@ class ApacheAlias(models.Model):
     def __unicode__(self):
         return self.site
 
+
 class AccountAlias(models.Model):	
     site = models.CharField(max_length=126)
     account = models.ForeignKey(ApacheAlias)
 
     def __unicode__(self):
         return self.site
+
 
 class Ftpuser(models.Model):
 #userid 	passwd 	uid 	gid 	homedir 	shell 	count 	accessed 	modified
@@ -124,13 +129,24 @@ class Ftpuser(models.Model):
     class Meta:
         db_table = "ftpusers"
 
+
+class Customer(models.Model):
+    name = models.CharField(max_length=200)
+    tel = models.CharField(max_length=20)
+    email = models.EmailField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Invoice(models.Model):
-    date = models.DateField()
+    user = models.ForeignKey(Customer)
+    account = models.ForeignKey(Account)
+    date = models.DateField(default=datetime.now())
     month = models.IntegerField(help_text="Pocet zaplacenych mesicu služby")
     size = models.IntegerField(help_text="Počet pronajatých GB")
-    sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy")
-    price = models.IntegerField(help_text="Celková suma se slevou")
-    account = models.ForeignKey(Account)
+    sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy", default=0)
+    price = models.IntegerField(help_text="Celková suma se slevou", default=0)
     file = FileBrowseField("File", max_length=200, blank=True, null=True)
 
     def date_end(self):
@@ -139,12 +155,4 @@ class Invoice(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.account, self.date.isoformat())
 
-class Customer(models.Model):
-    user = models.ForeignKey(User)
-    tel = models.IntegerField(max_length=20)
-    email = models.IntegerField(max_length=200)
-    invoice = models.ManyToManyField('Invoice')
-
-    def __unicode__(self):
-        return self.nazev
 

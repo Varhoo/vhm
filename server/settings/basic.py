@@ -6,7 +6,7 @@ TEMPLATE_DEBUG = DEBUG
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
 
 import os
-ROOT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/../"
+ROOT_PATH = os.path.abspath("%s/../" % os.path.dirname(os.path.realpath(__file__)))
 
 ADMINS = (
      ('Pavel Studenik', 'studenik@varhoo.cz'),
@@ -17,10 +17,10 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',	 # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'data.db',               # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'pavel1987', 
-        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+        'NAME': '%s/data.db' % ROOT_PATH,               # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '', 
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': ''                      # Set to empty string for default. Not used with sqlite3.
     }
 }
