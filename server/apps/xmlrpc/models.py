@@ -106,7 +106,10 @@ def get_all_projects(token):
         if r == False:
             return r
         accounts = ProjectSetting.objects.filter(account__server__token=token, is_enabled=True)
-        return [{"id": it.id, "name": it.account.name, "path": it.get_path(), "mode": it.mode,  
+        for it in accounts:
+            prj = ProjectProc.objects.filter(account=it)
+            print [pr.get_data() for pr in prj]
+        return [{"id": it.id, "name": it.account.name, "path": it.get_path(),
                  "user": it.account.user, "group": it.get_group() } for it in accounts]
 
 def set_account_size(token,id,size):

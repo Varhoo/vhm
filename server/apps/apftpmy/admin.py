@@ -35,6 +35,10 @@ class AliasInline(admin.TabularInline):
     extra = 0
 
 
+class ProcInline(admin.TabularInline):
+    model = ProjectProc
+    extra = 0
+
 class FtpuserInLine(admin.TabularInline):
     model = Ftpuser
     extra = 0
@@ -59,12 +63,12 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 class ProjectSettingAdmin(admin.ModelAdmin):
-    list_display = ('account', 'site', 'mode', 'power', 'repo_type', 'last_update', 'is_enabled',)
+    list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled',)
     #fieldsets = (
     #    (None, {
     #        'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
     #    }),)
-    inlines = [AliasInline, ]
+    inlines = [AliasInline, ProcInline ]
 
 
 class InvoiceAdmin(admin.ModelAdmin):
@@ -81,6 +85,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('name','expirate','description','check_pay')
     ordering = ['expirate',]
+
 
 admin.site.register(DomainAlias)
 admin.site.register(Account, AccountAdmin)

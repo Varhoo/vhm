@@ -117,14 +117,24 @@ class Project(models.Model):
 
 class ProjectSetting(Project):
     repo_type = models.IntegerField(choices=REPOS_ENUM, default=0);
-    repo_url = models.CharField(_('Repo update'), max_length=255, null=True, blank=True)
+    repo_url = models.CharField(_('Repo update'), max_length=256, null=True, blank=True)
     repo_version = models.CharField(_('Version id/hash'), max_length=128, null=True, blank=True)
     comment = models.TextField(_('Comment'), blank=True)
-    power = models.IntegerField(choices=POWER_ENUM,default=1);
     last_update = models.DateTimeField(_('Last Update'), null=True, blank=True)
 
+
+class ProjectProc(models.Model):
+    account = models.ForeignKey(ProjectSetting)
+    power = models.IntegerField(choices=POWER_ENUM, default=1);
     mode = models.IntegerField('mode', choices=MODE_ENUM)
-    mode_params = models.CharField(max_length=256, null=True, blank=True)
+    mode_params = models.TextField(max_length=256, null=True, blank=True)
+
+    def get_data(self):
+        params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
+        #params["home"] = self.account.path
+        print params 
+        if self.mode == 2:
+            print "ok"
 
 
 class DomainAlias(models.Model):	
