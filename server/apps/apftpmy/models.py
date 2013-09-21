@@ -131,10 +131,17 @@ class ProjectProc(models.Model):
 
     def get_data(self):
         params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
-        #params["home"] = self.account.path
-        print params 
+        data = { 
+                    "home": self.account.get_path(), 
+                    "user": self.account.account.user,
+                    "group": self.account.get_group(),
+               }
+        for it in params:
+            data.update(it)
+
         if self.mode == 2:
-            print "ok"
+            pass
+        return data
 
 
 class DomainAlias(models.Model):	

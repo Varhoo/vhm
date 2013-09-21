@@ -106,11 +106,14 @@ def get_all_projects(token):
         if r == False:
             return r
         accounts = ProjectSetting.objects.filter(account__server__token=token, is_enabled=True)
+        data = {}
         for it in accounts:
             prj = ProjectProc.objects.filter(account=it)
-            print [pr.get_data() for pr in prj]
-        return [{"id": it.id, "name": it.account.name, "path": it.get_path(),
-                 "user": it.account.user, "group": it.get_group() } for it in accounts]
+            for it in prj:
+                d = it.get_data()
+                data.update(d)
+        print data
+        return data
 
 def set_account_size(token,id,size):
         r = check_auth_host(token)
