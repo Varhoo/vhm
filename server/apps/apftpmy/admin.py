@@ -49,17 +49,24 @@ class FtpuserAdmin(admin.ModelAdmin):
 
     
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('name','path','sizeformat')
-#    fieldsets = (
-#        (None, {
-#            'fields': ('name', 'path', ('django_wsgi','is_valid'))
-#        }),
-#        ('Advanced options', {
-#            'classes': ('collapse',),
-#            'fields': ('last_modify','comment')
-#        }),
-#    )
+    list_display = ('name', 'path', 'sizeformat')
+    fieldsets = (
+        (None, {
+            'fields':
+                ( 'owner', 'server',
+                'name', 'path', 'size' )
+        }),
+        ('Advanced options', {
+            'classes': ('collapse',),
+            'fields': ('user', ('uid','gid'), 'token',)
+        }),
+    )
+    readonly_fields = ['size', 'token' ]
+    ordering= ['name',]
     inlines = [FtpuserInLine, ]
+    def save_model(self, request, obj, form, change):
+        obj.owner = request.user
+        obj.save()
 
 
 class ProjectSettingAdmin(admin.ModelAdmin):
@@ -69,6 +76,11 @@ class ProjectSettingAdmin(admin.ModelAdmin):
     #        'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
     #    }),)
     inlines = [AliasInline, ProcInline ]
+    def queryset(self, request):
+        return ProjectSetting.objects.filter(account__owner=request.user)
+    def save_model(self, request, obj, form, change):
+        obj.owner = request.user
+        obj.save()
 
 
 class InvoiceAdmin(admin.ModelAdmin):
@@ -80,11 +92,20 @@ class InvoiceAdmin(admin.ModelAdmin):
                 'is_paid', 'file', )
         }),) 
     readonly_fields = ['price', ]  
+    def queryset(self, request):
+        return Invoice.objects.filter(account__owner=request.user)
 
     
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('name','expirate','description','check_pay')
+    list_display = ('name', 'expirate', 'description', 'check_pay')
     ordering = ['expirate',]
+
+    def queryset(self, request):
+        return Domain.objects.filter(owner=request.user)
+
+    def save_model(self, request, obj, form, change):
+        obj.owner = request.user
+        obj.save()
 
 
 admin.site.register(DomainAlias)

@@ -166,9 +166,15 @@ if __name__ == "__main__":
     # for testing on localhost
     config = ConfigParser.ConfigParser()
     config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
-    token = config.get("client", "token")
-    server = config.get("client", "server")
-
+    try:
+        token = config.get("client", "token")
+        server = config.get("client", "server")
+    except ConfigParser.NoSectionError:
+        config.add_section("client")
+        config.set("client", "token", "")
+        config.set("client", "server", "")
+        config.write(open("vhm.conf", 'a'))
+        
     srv = ServerApp(server)
     srv.login(token)
     data =  srv.get_all_projects()

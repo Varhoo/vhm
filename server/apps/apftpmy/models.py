@@ -124,7 +124,7 @@ class ProjectSetting(Project):
 
 
 class ProjectProc(models.Model):
-    account = models.ForeignKey(ProjectSetting)
+    project = models.ForeignKey(ProjectSetting)
     power = models.IntegerField(choices=POWER_ENUM, default=1);
     mode = models.IntegerField('mode', choices=MODE_ENUM)
     mode_params = models.TextField(max_length=256, null=True, blank=True)
@@ -132,15 +132,24 @@ class ProjectProc(models.Model):
     def get_data(self):
         params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
         data = { 
-                    "home": self.account.get_path(), 
-                    "user": self.account.account.user,
-                    "group": self.account.get_group(),
+                    "home": self.project.get_path(), 
+                    "uid": self.project.account.user,
+                    "gid": self.project.get_group(),
+                    "pythonpath": self.account.path,
+                    "processes": 1,
+                    "optimize": 0,
+                    "limit-as": 128,
+                    "master": True,
+                    "no-orphans": True, 
+                    "pidfile": "%s/%d-%s.pid" % (self.project.path, self.id, self.project.account.name),
+                    "daemonize": "%s/%d-%s.log" % (self.project.path, self.id, self.project.account.name),
+                    "chdir": self.project.path,
                }
         for it in params:
             data.update(it)
 
         if self.mode == 2:
-            pass
+            data["http"] = "%d" % ( self.id + 8000)
         return data
 
 
