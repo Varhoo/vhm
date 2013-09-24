@@ -108,7 +108,7 @@ def get_all_projects(token):
         accounts = ProjectSetting.objects.filter(account__server__token=token, is_enabled=True)
         data = {}
         for it in accounts:
-            prj = ProjectProc.objects.filter(account=it)
+            prj = ProjectProc.objects.filter(project=it)
             for it in prj:
                 d = it.get_data()
                 data.update(d)
