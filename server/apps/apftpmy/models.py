@@ -5,6 +5,7 @@
 
 from django.db import models
 import settings, random
+import os
 from datetime import *
 from django.contrib.auth.models import User
 
@@ -106,7 +107,7 @@ class Project(models.Model):
     note = models.TextField(_('Note'), blank=True)
 
     def get_path(self):
-        return "%s/%s" % (self.account.path, self.path )
+        return os.path.abspath("%s/%s" % (self.account.path, self.path ))
 
     def get_group(self):
         return settings.APACHE_GROUP
@@ -133,23 +134,25 @@ class ProjectProc(models.Model):
         params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
         data = { 
                     "home": self.project.get_path(), 
+                    "id": self.id, 
                     "uid": self.project.account.user,
                     "gid": self.project.get_group(),
-                    "pythonpath": self.account.path,
+                    "pythonpath": self.project.account.path,
                     "processes": 1,
                     "optimize": 0,
                     "limit-as": 128,
                     "master": True,
                     "no-orphans": True, 
-                    "pidfile": "%s/%d-%s.pid" % (self.project.path, self.id, self.project.account.name),
-                    "daemonize": "%s/%d-%s.log" % (self.project.path, self.id, self.project.account.name),
-                    "chdir": self.project.path,
+                    "pidfile": "%s/%d-%s.pid" % (self.project.get_path(), self.id, self.project.account.name),
+                    "daemonize": "%s/%d-%s.log" % (self.project.get_path(), self.id, self.project.account.name),
+                    "chdir": self.project.account.path,
                }
         for it in params:
             data.update(it)
-
         if self.mode == 2:
             data["http"] = "%d" % ( self.id + 8000)
+            if data.has_key("wsgi-file") and not data["wsgi-file"].startswith("/"):
+                data["wsgi-file"] = "%s/%s" % (self.project.get_path(), data["wsgi-file"])
         return data
 
 

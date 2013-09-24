@@ -14,8 +14,8 @@ import compiler #parse python file
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 sys.path.append(ROOT_PATH)
 
-from vhlib_server import *
-from vhlib_client import *
+from lib.vhmserver import *
+from lib.vhmcli import *
 #from django.core.mail import send_mail
 
 import ConfigParser
@@ -24,6 +24,26 @@ ROOT_PATH = "/var/www/"
 SMTP_USERNAME = "bot@varhoo.cz"
 SMTP_PASSWORD =  "botbotbot"
 
+ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
+        'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
+        'pidfile', "wsgi-file"]
+
+def aray2xml(data):
+    def tag(tag, value):
+        return "<%s>%s</%s>" % (tag, value, tag)
+
+    content = ["<server>"]
+    for proc in data:
+        content.append("<uwsgi id=\"%d\">" % proc["id"])
+        for key, it in proc.iteritems():
+            if not key in ENABLE_UWSGI_TAG: continue
+            if type(it) == bool:
+                content.append("<%s/>" % key)
+            else:
+                content.append(tag(key, it))
+        content.append("</uwsgi>")
+    content.append("</server>")
+    print "\n".join(content)
 
 def get_admins_from_django(homedir):
     """ Get admin's emails from django settings """
@@ -178,7 +198,7 @@ if __name__ == "__main__":
     srv = ServerApp(server)
     srv.login(token)
     data =  srv.get_all_projects()
-    print data
+    aray2xml(data)
     sys.exit(0)
 
     data =  srv.get_all_account()

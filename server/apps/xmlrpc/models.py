@@ -106,13 +106,12 @@ def get_all_projects(token):
         if r == False:
             return r
         accounts = ProjectSetting.objects.filter(account__server__token=token, is_enabled=True)
-        data = {}
+        data = []
         for it in accounts:
             prj = ProjectProc.objects.filter(project=it)
             for it in prj:
                 d = it.get_data()
-                data.update(d)
-        print data
+                data.append(d)
         return data
 
 def set_account_size(token,id,size):
@@ -120,7 +119,7 @@ def set_account_size(token,id,size):
         if r == False:
             return r
         try:
-            account = Account.objects.get(id=id,server__token=token)
+            account = Account.objects.get(id=id, server__token=token)
             account.size=size
             account.save()
             return True
