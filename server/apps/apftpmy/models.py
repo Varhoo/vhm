@@ -109,7 +109,7 @@ class Account(models.Model):
         if self.account_type!=TYPE_ENUM_C0MMERCIAL:
             return True
         li = self.last_invoice()
-        if li.next_pay() > datetime.now().date():
+        if li.is_paid == True and li.next_pay() > datetime.now().date():
             return True
         return False
     is_pay.boolean = True
