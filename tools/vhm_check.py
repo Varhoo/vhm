@@ -30,20 +30,20 @@ ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath',
 
 def aray2xml(data):
     def tag(tag, value):
-        return "<%s>%s</%s>" % (tag, value, tag)
+        return "      <%s>%s</%s>" % (tag, value, tag)
 
     content = ["<server>"]
     for proc in data:
-        content.append("<uwsgi id=\"%d\">" % proc["id"])
+        content.append("   <uwsgi id=\"%d\">" % proc["id"])
         for key, it in proc.iteritems():
             if not key in ENABLE_UWSGI_TAG: continue
             if type(it) == bool:
-                content.append("<%s/>" % key)
+                content.append("      <%s/>" % key)
             else:
                 content.append(tag(key, it))
-        content.append("</uwsgi>")
+        content.append("   </uwsgi>")
     content.append("</server>")
-    print "\n".join(content)
+    return "\n".join(content)
 
 def get_admins_from_django(homedir):
     """ Get admin's emails from django settings """
@@ -198,7 +198,8 @@ if __name__ == "__main__":
     srv = ServerApp(server)
     srv.login(token)
     data =  srv.get_all_projects()
-    aray2xml(data)
+    content = aray2xml(data)
+    print content
     sys.exit(0)
 
     data =  srv.get_all_account()
