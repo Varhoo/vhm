@@ -96,7 +96,7 @@ class Account(models.Model):
         verbose_name_plurar = _('Acounts')
 
     def last_invoice(self):
-        invoice = Invoice.objects.filter(account=self, is_paid=True).order_by("-date")[:1]
+        invoice = Invoice.objects.filter(account=self).order_by("-date")[:1]
         if invoice:
             return invoice[0]
 
