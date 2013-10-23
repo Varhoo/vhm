@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 admin.autodiscover()
 
-import settings
+from django.conf import settings
 
 try:
     from filebrowser.sites import site;
@@ -32,4 +32,5 @@ urlpatterns += patterns('',
     # Uncomment the next line to enable the admin:
     (r'^xmlrpc/$', 'apps.xmlrpc.models.rpc_handler'),
     (r'^admin/', include(admin.site.urls)),
+    (r'^project/', include('apps.project.urls')),
 )
