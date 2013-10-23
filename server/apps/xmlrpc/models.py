@@ -86,7 +86,11 @@ def get_all_account(token):
         if r == False:
             return r
         accounts = Account.objects.filter(server__token=token)
-        return [{"id": it.id, "name": it.name, "path": it.path, "user": it.user} for it in accounts]
+        return [ { "id": it.id, 
+                   "name": it.name, 
+                   "path": it.path, 
+                   "uwsgi": it.django_uwsgi, 
+                   "user": it.user} for it in accounts]
 
 def get_all_repo(token):
         r = check_auth_host(token)

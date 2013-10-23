@@ -76,7 +76,7 @@ class ApacheAliasAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields':
-                ('account', 'site', ('django_wsgi', 'is_valid', 'power'), 
+                ('account', 'site', ('django_wsgi', 'is_valid', 'django_uwsgi', 'power'), 
                 ('repo_type', 'repo_version'), 'repo_url', 'note', 'comment')
         }),)
     inlines = [AliasInline, ]

@@ -120,6 +120,7 @@ class ApacheAlias(models.Model):
     note = models.TextField(_('Note'), blank=True)
     site = models.CharField(max_length=126)
     django_wsgi = models.BooleanField('Django mode')
+    django_uwsgi = models.BooleanField('Django uwsg-manager', default=False)
     djnago_wsgi_name = models.CharField(max_length=124, null=True, blank=True)
     # svn or git fot update
     repo_type = models.IntegerField(choices=REPOS_ENUM,default=0);
