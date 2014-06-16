@@ -1,6 +1,7 @@
 import sys, os, re
 import xmlrpclib, commands
 import utils
+from repository import *
 
 def getFolderSize(folder):
     total_size = os.path.getsize(folder)
@@ -30,10 +31,11 @@ def getUidGidByUser(user):
 
 
 class ServerApp:
-   def __init__(self, host, verbose=0):
-      self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % host, verbose=verbose)
+   def __init__(self, conf):
+      self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % conf.server, verbose=conf.verbose)
       ping = self.rpc_srv.ping()
-      print host, ping
+      print conf.server, ping
+      self.conf = conf
 
    def login(self, token):
       self.token = token
@@ -43,10 +45,10 @@ class ServerApp:
       Get size of homedir and update data on the server
       """
       result = self.rpc_srv.get_all_account( self.token  )
-      print "debug: %s" % result
+      print "DEBUG getsize: %s" % result
       for it in result:
          size = getFolderSize(it["path"])         
-         result = self.rpc_srv.set_account_size( self.token, it["id"],size )
+         result = self.rpc_srv.set_account_size( self.token, it["id"], size )
 
    def check_userid_all(self):
       result = self.rpc_srv.get_all_account( self.token  )
@@ -62,6 +64,31 @@ class ServerApp:
    def get_all_account(self):
        result = self.rpc_srv.get_all_repo( self.token  )
        return result
+
+   def check_repo(self):
+       result = self.rpc_srv.get_all_repo( self.token  )
+
+       for it in result:
+          path, repo_id = it["path"], it["repo_type"]
+
+          if not os.path.exists(path):
+             print "path %s not exists" % path
+          else:
+             print path, repo_id
+
+             if repo_id == 1: #SVN
+                 res = update_repo_svn(it)
+             elif repo_id == 2: #GIT
+                 res = update_repo_git(it)
+         
+   def apache_restart(self):
+        # restart apache service
+        if count > 0:
+            command = "service apache2 restart" 
+            print "[ INFO ] \t Service apache restart ..."
+            result = commands.getstatusoutput(command)
+            if result[0] > 0:
+                print result[1]
 
    def get_all_projects(self):
        result = self.rpc_srv.get_all_projects( self.token  )

@@ -94,7 +94,7 @@ def get_all_repo(token):
         if r == False:
             return r
         data = ProjectSetting.objects.filter(account__server__token=token, repo_type__gt=0, is_enabled=True)
-        return [{"id": it.id, "site": it.site, "path": it.account.path, 
+        return [{"id": it.id, "site": it.site, "path": "%s/%s" % (it.account.path, it.path), 
                  "repo_version": it.repo_version, "repo_url": it.repo_url,
                  "repo_type": it.repo_type, "name": it.account.name, 
                  "user": it.account.user} for it in data]
