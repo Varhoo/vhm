@@ -140,6 +140,7 @@ INSTALLED_APPS = (
     'apps.consumer',
     'apps.xmlrpc',
     'apps.task_automatic',
+    "south",
 )
 
 AUTH_PROFILE_MODULE = 'apps.auth.models.UserProfil'

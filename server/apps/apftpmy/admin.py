@@ -1,7 +1,6 @@
 from models import *
 from django.contrib import admin
-
-admin.site.register(Customer)
+from django.core.urlresolvers import reverse
 
 class MultiDBModelAdmin(admin.ModelAdmin):
     # A handy constant for the name of the alternate database.
@@ -39,6 +38,18 @@ class ProcInline(admin.TabularInline):
     model = ProjectProc
     extra = 0
 
+
+class ProjectInline(admin.TabularInline):
+    model = ProjectSetting
+    extra = 0
+    fields = ("get_admin_link", "path", "site", "is_enabled" )
+    readonly_fields = ( "get_admin_link", )
+    def get_admin_link(self, obj):
+        url = reverse('admin:apftpmy_projectsetting_change', args=(obj.pk,))
+        return '<a href="%s">1%s</a>' % (url, obj.id)
+    get_admin_link.allow_tags = True
+
+
 class FtpuserInLine(admin.TabularInline):
     model = Ftpuser
     extra = 0
@@ -53,17 +64,16 @@ class AccountAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields':
-                ( 'owner', 'server',
-                'name', 'path', 'size' )
+                ( 'owner', 'server', 'name', 'size' )
         }),
         ('Advanced options', {
             'classes': ('collapse',),
-            'fields': ('user', ('uid','gid'), 'token',)
+            'fields': ('user', "path", ('uid', 'gid'), 'token',)
         }),
     )
-    readonly_fields = ['size', 'token' ]
+    readonly_fields = ['size', 'token', "uid", "gid" ]
     ordering= ['name',]
-    inlines = [FtpuserInLine, ]
+    inlines = [ProjectInline, FtpuserInLine, ]
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         obj.save()
@@ -108,10 +118,11 @@ class DomainAdmin(admin.ModelAdmin):
         obj.save()
 
 
+admin.site.register(Server)
+admin.site.register(Customer)
 admin.site.register(DomainAlias)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Ftpuser, FtpuserAdmin)
-admin.site.register(Server)
 admin.site.register(ProjectSetting, ProjectSettingAdmin)
 admin.site.register(Domain, DomainAdmin)
