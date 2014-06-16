@@ -1,7 +1,7 @@
 Varhoo Manager
 =============
 
-It's client/server application for manage django, php projects on remote servers. Applicion support:
+It's client/server application for manage django, php projects on remote servers. Application supports followin operations:
 
 * Manage projects, systems
 * Production running due to uwsgi, proxy, appache2
