@@ -35,7 +35,7 @@ class ActionServer(models.Model):
     status = models.IntegerField(default=0,choices=STATUS_ENUM);   
     exit_code = models.IntegerField(blank=True,null=True);   
 
-dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
+dispatcher = SimpleXMLRPCDispatcher(allow_none=True, encoding="utf8",)
 
 
 @csrf_exempt
@@ -47,10 +47,9 @@ def rpc_handler(request):
         If post data is defined, it assumes it's XML-RPC and tries to process as such
         Empty post assumes you're viewing from a browser and tells you about the service.
         """
-
-        if len(request.POST):
+        if len(request.body):
                 response = HttpResponse(mimetype="application/xml")
-                response.write(dispatcher._marshaled_dispatch(request.raw_post_data))
+                response.write(dispatcher._marshaled_dispatch(request.body))
         else:
                 response = HttpResponse()
                 response.write("<h1>This is an XML-RPC Service.</h2>")
@@ -94,7 +93,7 @@ def get_all_repo(token):
         r = check_auth_host(token)
         if r == False:
             return r
-        data = ApacheAlias.objects.filter(account__server__token=token, repo_type__gt=0, is_valid=True)
+        data = ProjectSetting.objects.filter(account__server__token=token, repo_type__gt=0, is_enabled=True)
         return [{"id": it.id, "site": it.site, "path": it.account.path, 
                  "repo_version": it.repo_version, "repo_url": it.repo_url,
                  "repo_type": it.repo_type, "name": it.account.name, 
@@ -178,6 +177,9 @@ def action_server_status(token,id,status,exit_code=None):
         action.save()
         return True
 
+def ping():
+        return True
+
 # you have to manually register all functions that are xml-rpc-able with the dispatcher
 # the dispatcher then maps the args down.
 # The first argument is the actual method, the second is what to call it from the XML-RPC side...
@@ -191,3 +193,4 @@ dispatcher.register_function(set_account_uidguid, 'set_account_uidguid')
 dispatcher.register_function(set_domain_expirate, 'set_domain_expirate')
 dispatcher.register_function(action_server_list, 'action_server_list')
 dispatcher.register_function(action_server_status, 'action_server_status')
+dispatcher.register_function(ping, 'ping')

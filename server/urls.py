@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 from filebrowser.sites import site
 from django.conf import settings
 

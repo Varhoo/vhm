@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 import compiler #parse python file
 
 # dynamic path for importing
-ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
+ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".")
 sys.path.append(ROOT_PATH)
 
 from lib.vhmserver import *
@@ -179,32 +179,66 @@ def update_repo_svn(data):
         if len([it for it in result[1].split("\n") if it.endswith(".py")]) > 0:
             return 1
     return 0
-    
+
+
+class Config:
+    def __init__(self):
+        config = ConfigParser.ConfigParser()
+        config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
+        self.conf = config
+
+        try:
+            self.token = self.get("client", "token")
+            self.server = self.get("client", "server")
+            self.verbose = self.getint("client", "verbose")
+            self.monitoring = self.getboolean("client", "monitoring", default=False)
+        except ConfigParser.NoSectionError:
+            config.add_section("client")
+            config.set("client", "token", "")
+            config.set("client", "server", "")
+            config.set("client", "verbose", "0")
+            config.write(open("vhm.conf", 'a'))
+
+    def getboolean(self, sec, name, default=None):
+        if self.conf.has_option(sec, name):
+            return self.conf.getboolean(sec, name)
+        else:
+            return default
+
+    def getint(self, sec, name, default=None):
+        if self.conf.has_option(sec, name):
+            return self.conf.getint(sec, name)
+        else:
+            return default
+
+    def get(self, sec, name, default=None):
+        if self.conf.has_option(sec, name):
+            return self.conf.get(sec, name)
+        else:
+            return default
+        
+ 
 
 if __name__ == "__main__":
-    #srv = ServerApp("admin.varhoo.cz")
     # for testing on localhost
-    config = ConfigParser.ConfigParser()
-    config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
-    try:
-        token = config.get("client", "token")
-        server = config.get("client", "server")
-    except ConfigParser.NoSectionError:
-        config.add_section("client")
-        config.set("client", "token", "")
-        config.set("client", "server", "")
-        config.write(open("vhm.conf", 'a'))
+    conf = Config()    
+ 
+    srv = ServerApp(conf.server, conf.verbose)
+    srv.login(conf.token)
+
+    # run only for monitoring
+    if conf.monitoring:
+        print "TODO: run monitoring"
         
-    srv = ServerApp(server)
-    srv.login(token)
     data =  srv.get_all_projects()
     content = aray2xml(data)
-    print content
-    sys.exit(0)
+    #print content
 
     data =  srv.get_all_account()
+    print data
     count = 0
 
+    sys.exit(0)
 
     # update all projects
     for it in data:

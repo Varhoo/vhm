@@ -26,13 +26,14 @@ def getUidGidByUser(user):
         m2 = re.search('gid=([0-9]*)', data[1])
         uid = m1.group(1)  
         gid = m2.group(1)
-
     return (uid, gid)
 
 
 class ServerApp:
-   def __init__(self, host):
-      self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % host)
+   def __init__(self, host, verbose=0):
+      self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % host, verbose=verbose)
+      ping = self.rpc_srv.ping()
+      print host, ping
 
    def login(self, token):
       self.token = token
