@@ -21,7 +21,7 @@ STATUS_ENUM = (
    (3, "Error"),
 )
 
-#model for check
+
 class Action(models.Model):
     account = models.ForeignKey(Account)
     last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
@@ -31,14 +31,15 @@ class Action(models.Model):
  
 class ActionServer(models.Model):
     server = models.ForeignKey(Server)
-    last_modify = models.DateTimeField(_('Last Modify'),default=datetime.now)
-    command = models.IntegerField();
-    args = models.TextField(blank=True,null=True);
-    status = models.IntegerField(default=0,choices=STATUS_ENUM);   
-    exit_code = models.IntegerField(blank=True,null=True);   
+    status = models.IntegerField(default=0, choices=STATUS_ENUM)
+    command = models.TextField(blank=True, null=True)
+    role = models.CharField(max_length=64, default="root")
+    result = models.TextField(blank=True)   
+    exit_code = models.IntegerField(blank=True, null=True)
+    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
+
 
 dispatcher = SimpleXMLRPCDispatcher(allow_none=True, encoding="utf8",)
-
 
 @csrf_exempt
 def rpc_handler(request):
@@ -157,7 +158,7 @@ def set_account_uidguid(token,id,uid,gid):
 # only for user
 def action_for_project(token,action):
          acc = Account.objects.get(token=token)
-         if len(Action.objects.filter(account=acc,command=action, status=0))>0:
+         if len(Action.objects.filter(account=acc,command=action, status=0)) > 0:
             return "INFO: waiting, this action in sheduler"
 
          act = Action(account=acc,command=action)
@@ -169,11 +170,12 @@ def action_server_list(token):
         if srv == False:
             return srv
         actions = ActionServer.objects.filter(server__token=token, status=0)
-        return [{"id": it.id, "command": it.command, "args": it.args, "srv": srv.os_type} for it in actions]
+        return [{"id": it.id, "command": it.command, "role": it.role, "srv": srv.os_type} for it in actions]
 
-def action_server_status(token, id, status, exit_code=None):
-        action = ActionServer.objects.get(server__token=token, id=id,status__in=(0,1))
+def action_server_status(token, id, status, result="", exit_code=None):
+        action = ActionServer.objects.get(server__token=token, id=id, status__in=(0, 1))
         action.status = status
+        action.result = result
         action.exit_code = exit_code
         action.last_modify = datetime.now()
         action.save()

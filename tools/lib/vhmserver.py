@@ -106,16 +106,31 @@ class ServerApp:
         self.rpc_srv.set_monitoring_data(self.token, data)
 
    def get_all_projects(self):
-       result = self.rpc_srv.get_all_projects( self.token  )
-       return result
+      result = self.rpc_srv.get_all_projects( self.token  )
+      return result
 
+   def do_all_actions(self):
+      data = self.rpc_srv.action_server_list( self.token  )
+      for it in data:
+         result = self.rpc_srv.action_server_status( self.token, it["id"], 1  )
+         if os.geteuid() == 0:
+             cmd =  "su %s -c '%s'" % (it["role"], it["command"])
+         else:
+             cmd =  "%s" % (it["command"])
+         status, result = commands.getstatusoutput(cmd)
+         if status == 0:
+            result = self.rpc_srv.action_server_status( self.token, it["id"], 2, result, status )
+         else:
+            result = self.rpc_srv.action_server_status( self.token, it["id"], 3, result, status )
+
+   # all version, now is not used
    def check_action_all(self):
       result = self.rpc_srv.action_server_list( self.token  )
       print "debug:", result
       for it in result:
          result = self.rpc_srv.action_server_status( self.token, it["id"], 1  )
          status = {
-           1: lambda x,y: self.__action_update(x,y),
+           1: lambda x,y: self.__action_update(x, y),
            2: lambda x,y: "action 2" + x ,
            3: lambda x,y: "action 3" + x 
          }[it["command"]](it["args"],it["srv"])
