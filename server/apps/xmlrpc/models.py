@@ -6,11 +6,13 @@
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from apps.apftpmy.models import *
 from django.conf import settings
 from django.db import models
 from datetime import datetime, date
 from django.utils.translation import ugettext_lazy as _
+
+from apps.apftpmy.models import *
+from apps.monitoring.models import *
 
 STATUS_ENUM = (
    (0, "Waiting"),
@@ -24,7 +26,7 @@ class Action(models.Model):
     account = models.ForeignKey(Account)
     last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
     command = models.IntegerField();
-    status = models.IntegerField(default=0);
+    status = models.IntegerField(default=0);    
 
  
 class ActionServer(models.Model):
@@ -182,7 +184,9 @@ def ping():
 
 def set_monitoring_data(token, data):
     server = Server.objects.get(token=token)
-    print data, server
+    for it in data:
+        r = Record(server=server, name=it, value=data[it])
+        r.save()
 
 # you have to manually register all functions that are xml-rpc-able with the dispatcher
 # the dispatcher then maps the args down.
