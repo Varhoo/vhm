@@ -55,6 +55,7 @@ class Config:
             self.server = self.get("client", "server")
             self.verbose = self.getint("client", "verbose")
             self.monitoring = self.getboolean("client", "monitoring", default=False)
+            self.ssl = self.getboolean("client", "ssl_enable", default=False)
             self.smtp = self.get("smtp", "host", default=False)
         except ConfigParser.NoSectionError:
             config.add_section("client")

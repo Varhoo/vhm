@@ -33,7 +33,10 @@ def getUidGidByUser(user):
 
 class ServerApp:
    def __init__(self, conf):
-      self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % conf.server, verbose=conf.verbose)
+      protocol = "http" if not conf.ssl else "https"
+      url = "%s://%s/xmlrpc/?get=test" % (protocol, conf.server) 
+      print url
+      self.rpc_srv = xmlrpclib.ServerProxy(url, verbose=conf.verbose)
       ping = self.rpc_srv.ping()
       print conf.server, ping
       self.conf = conf
