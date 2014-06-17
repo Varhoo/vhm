@@ -93,6 +93,7 @@ if __name__ == "__main__":
     # run only for monitoring
     if conf.monitoring:
         print "TODO: run monitoring"
+        srv.monitoring()
         
     data =  srv.get_all_projects()
     content = aray2xml(data)

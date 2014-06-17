@@ -2,6 +2,7 @@ import sys, os, re
 import xmlrpclib, commands
 import utils
 from repository import *
+import psutil
 
 def getFolderSize(folder):
     total_size = os.path.getsize(folder)
@@ -90,6 +91,17 @@ class ServerApp:
             if result[0] > 0:
                 print result[1]
 
+   def monitoring(self):
+        mem = psutil.virtual_memory()
+        cpu = psutil.cpu_percent(interval=1.)
+
+        data = {
+            "mem_free": mem.free,
+            "mem_percent": mem.percent,
+            "cpu_percent": cpu
+        }
+        self.rpc_srv.set_monitoring_data(self.token, data)
+
    def get_all_projects(self):
        result = self.rpc_srv.get_all_projects( self.token  )
        return result
@@ -129,6 +141,8 @@ class ServerApp:
       print "result:", res[0]
       print "result:", res[1]
       return res[0] 
+
+
 
 
 class MainServerApp:

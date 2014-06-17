@@ -169,7 +169,7 @@ def action_server_list(token):
         actions = ActionServer.objects.filter(server__token=token, status=0)
         return [{"id": it.id, "command": it.command, "args": it.args, "srv": srv.os_type} for it in actions]
 
-def action_server_status(token,id,status,exit_code=None):
+def action_server_status(token, id, status, exit_code=None):
         action = ActionServer.objects.get(server__token=token, id=id,status__in=(0,1))
         action.status = status
         action.exit_code = exit_code
@@ -179,6 +179,10 @@ def action_server_status(token,id,status,exit_code=None):
 
 def ping():
         return True
+
+def set_monitoring_data(token, data):
+    server = Server.objects.get(token=token)
+    print data, server
 
 # you have to manually register all functions that are xml-rpc-able with the dispatcher
 # the dispatcher then maps the args down.
@@ -194,3 +198,5 @@ dispatcher.register_function(set_domain_expirate, 'set_domain_expirate')
 dispatcher.register_function(action_server_list, 'action_server_list')
 dispatcher.register_function(action_server_status, 'action_server_status')
 dispatcher.register_function(ping, 'ping')
+#monitoring
+dispatcher.register_function(set_monitoring_data, 'set_monitoring_data')
