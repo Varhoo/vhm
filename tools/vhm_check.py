@@ -15,11 +15,6 @@ ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".")
 from vhmlib.vhmserver import *
 from vhmlib.vhmcli import *
 
-
-ROOT_PATH = "/var/www/"
-SMTP_USERNAME = "bot@varhoo.cz"
-SMTP_PASSWORD =  "botbotbot"
-
 ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
         'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
         'pidfile', "wsgi-file"]
@@ -46,22 +41,29 @@ def aray2xml(data):
 class Config:
     def __init__(self):
         config = ConfigParser.ConfigParser()
+        path = "vhm.conf"
+        if not os.path.exists(path):
+            self.create()
         config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
         self.conf = config
+        print path
 
-        try:
-            self.token = self.get("client", "token")
-            self.server = self.get("client", "server")
-            self.verbose = self.getint("client", "verbose")
-            self.monitoring = self.getboolean("client", "monitoring", default=False)
-            self.ssl = self.getboolean("client", "ssl_enable", default=False)
-            self.smtp = self.get("smtp", "host", default=False)
-        except ConfigParser.NoSectionError:
-            config.add_section("client")
-            config.set("client", "token", "")
-            config.set("client", "server", "")
-            config.set("client", "verbose", "0")
-            config.write(open("vhm.conf", 'a'))
+
+        self.token = self.get("client", "token")
+        self.server = self.get("client", "server")
+        self.verbose = self.getint("client", "verbose")
+        self.monitoring = self.getboolean("client", "monitoring", default=False)
+        self.ssl = self.getboolean("client", "ssl_enable", default=False)
+        self.smtp = self.get("smtp", "host", default=False)
+
+    def create(self):
+        config = ConfigParser.ConfigParser()
+        config.add_section("client")
+        config.set("client", "token", "")
+        config.set("client", "server", "")
+        config.set("client", "verbose", "0")
+        config.set("client", "ssl_enable", "False")
+        config.write(open("vhm.conf", 'w'))
 
     def getboolean(self, sec, name, default=None):
         if self.conf.has_option(sec, name):
