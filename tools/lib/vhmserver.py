@@ -37,12 +37,13 @@ class ServerApp:
       url = "%s://%s/xmlrpc/?get=test" % (protocol, conf.server) 
       print url
       self.rpc_srv = xmlrpclib.ServerProxy(url, verbose=conf.verbose)
-      ping = self.rpc_srv.ping()
-      print conf.server, ping
+      
       self.conf = conf
 
    def login(self, token):
       self.token = token
+      ping = self.rpc_srv.ping(self.token)
+      print self.conf.server, ping
 
    def check_size_all(self):
       """

@@ -39,10 +39,27 @@ class ActionServer(models.Model):
     last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
 
 
-dispatcher = SimpleXMLRPCDispatcher(allow_none=True, encoding="utf8",)
+class SXD(SimpleXMLRPCDispatcher):
+    def __init__(self, allow_none=False, encoding=None, ip=None):
+        self.funcs = {}
+        self.instance = None
+        self.allow_none = allow_none
+        self.encoding = encoding
+        self.ip = ip
+
+    #def _dispatch(self, method, params):
+    #    print method, params
+    #    res = super(SimpleXMLRPCDispatcher, self)._dispatch(method, params)
+    #    print res
+
+dispatcher = SXD(allow_none=True, encoding="utf8", )
+## FIXME - exists better way to save global ip from requirement
+ip = ""
+
 
 @csrf_exempt
 def rpc_handler(request):
+        global ip
         """
         the actual handler:
         if you setup your urls.py properly, all calls to the xml-rpc service
@@ -51,8 +68,12 @@ def rpc_handler(request):
         Empty post assumes you're viewing from a browser and tells you about the service.
         """
         if len(request.body):
-                response = HttpResponse(mimetype="application/xml")
-                response.write(dispatcher._marshaled_dispatch(request.body))
+            ip = request.META["REMOTE_ADDR"]
+            response = HttpResponse(mimetype="application/xml")
+            data = dispatcher._marshaled_dispatch(request.body)
+            response.write(data)
+
+            #d = Xmlrpc(request)
         else:
                 response = HttpResponse()
                 response.write("<h1>This is an XML-RPC Service.</h2>")
@@ -116,7 +137,7 @@ def get_all_projects(token):
                 data.append(d)
         return data
 
-def set_account_size(token,id,size):
+def set_account_size(token, id, size):
         r = check_auth_host(token)
         if r == False:
             return r
@@ -181,8 +202,13 @@ def action_server_status(token, id, status, result="", exit_code=None):
         action.save()
         return True
 
-def ping():
-        return True
+def ping(token):
+    global ip
+    srv = check_auth_host(token)
+    srv.last_checked = datetime.now()
+    srv.global_ip = ip
+    srv.save()
+    return True
 
 def set_monitoring_data(token, data):
     server = Server.objects.get(token=token)
