@@ -11,10 +11,9 @@ import ConfigParser
 
 # dynamic path for importing
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".")
-sys.path.append(ROOT_PATH)
 
-from lib.vhmserver import *
-from lib.vhmcli import *
+from vhmlib.vhmserver import *
+from vhmlib.vhmcli import *
 
 
 ROOT_PATH = "/var/www/"
