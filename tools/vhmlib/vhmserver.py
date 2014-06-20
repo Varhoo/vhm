@@ -27,14 +27,14 @@ class ServerApp:
    def login(self, token):
       self.token = token
       ping = self.rpc_srv.ping(self.token)
-      print self.conf.server, ping
+      if self.conf.verbose > 0:
+	 print self.conf.server, ping
 
    def check_size_all(self):
       """
       Get size of homedir and update data on the server
       """
       result = self.rpc_srv.get_all_account( self.token  )
-      print "DEBUG getsize: %s" % result
       for it in result:
          size = getFolderSize(it["path"])         
          result = self.rpc_srv.set_account_size( self.token, it["id"], size )
@@ -105,6 +105,7 @@ class ServerApp:
          result = self.rpc_srv.action_server_status( self.token, it["id"], 1  )
          if int(it["command_type"]) == 100:
             d = it["command"].split()
+            print d
             if d[0] == "user":
                 u = User(d[2])
                 if d[1] == "create":

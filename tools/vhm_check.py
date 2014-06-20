@@ -98,12 +98,12 @@ if __name__ == "__main__":
     """ Run all script for this systems. """
     srv.do_all_actions(conf)
 
-    if conf.monitoring:
     """ send data for monitoring """
+    if conf.monitoring:
         srv.monitoring()
    
-    if conf.webproject: 
     """ create repo for web project - apache2/uwsgi"""
+    if conf.webproject: 
         data =  srv.get_all_projects()
         content = aray2xml(data)
 
