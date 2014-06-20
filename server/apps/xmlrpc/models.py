@@ -105,7 +105,7 @@ def check_auth_host(token):
             srv = Server.objects.get(token=token)
             return srv
         except Server.DoesNotExist:
-            return "error: bad auth"
+            return None
 
 def get_all_account(token):
         r = check_auth_host(token)
@@ -172,7 +172,6 @@ def set_account_uidguid(token, user, uid, gid):
             account.uid=uid
             account.gid=gid
             account.save()
-            print account
             return True
         except Account.DoesNotExist:
             return False
@@ -207,6 +206,7 @@ def action_server_status(token, id, status, result="", exit_code=None):
 def ping(token):
     global ip
     srv = check_auth_host(token)
+    if not srv: return False
     srv.last_checked = datetime.now()
     srv.global_ip = ip
     srv.save()

@@ -27,8 +27,10 @@ class ServerApp:
    def login(self, token):
       self.token = token
       ping = self.rpc_srv.ping(self.token)
+      if not ping:
+           print "INFO: token does not exist"
       if self.conf.verbose > 0:
-	 print self.conf.server, ping
+          print self.conf.server, ping
 
    def check_size_all(self):
       """
@@ -125,7 +127,7 @@ class ServerApp:
          else:
             result = self.rpc_srv.action_server_status( self.token, it["id"], 3, result, status )
 
-   def __action_update(self,args,srv):
+   def __action_update(self, args, srv):
       def deb(args):
          print "UPDATE debian:"
          command = "apt-get update; apt-get upgrade -y"
@@ -144,7 +146,15 @@ class ServerApp:
 
       print "result:", res[0]
       print "result:", res[1]
-      return res[0] 
+      return res[0]
+
+   def send_file(self, filepath):
+      f = open(filepath)
+      data = f.read()
+      f.close()
+      # need use better  way to upload file
+      #self.rpc_srv.send_file( self.token, data)
+
 
 
 class MainServerApp:

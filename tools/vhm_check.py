@@ -44,8 +44,13 @@ class Config:
 
         config = ConfigParser.ConfigParser()
         if not os.path.exists(path):
-            self.create()
-        config.read([path, os.path.expanduser('~/.vhm.conf')])
+            try:
+                self.create(path)
+            except IOError:
+                path = os.path.expanduser('~/.vhm.conf')
+                if not os.path.exists(path):
+                    self.create(path)
+        config.read(path)
         self.conf = config
 
         self.token = self.get("client", "token")
@@ -57,15 +62,17 @@ class Config:
         self.group = self.get("webproject", "group")
         self.smtp = self.get("smtp", "host", default=False)
 
-    def create(self):
+    def create(self, path):
         config = ConfigParser.ConfigParser()
         config.add_section("client")
+        config.add_section("webproject")
+        config.add_section("smtp")
         config.set("client", "token", "")
         config.set("client", "server", "")
         config.set("client", "verbose", "0")
         config.set("client", "ssl_enable", "False")
         config.set("webproject", "group", "webuser")
-        config.write(open("vhm.conf", 'w'))
+        config.write(open(path, 'w'))
 
     def getboolean(self, sec, name, default=None):
         if self.conf.has_option(sec, name):
