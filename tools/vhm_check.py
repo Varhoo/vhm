@@ -54,6 +54,7 @@ class Config:
         self.verbose = self.getint("client", "verbose")
         self.monitoring = self.getboolean("client", "monitoring", default=False)
         self.ssl = self.getboolean("client", "ssl_enable", default=False)
+        self.group = self.get("webproject", "group")
         self.smtp = self.get("smtp", "host", default=False)
 
     def create(self):
@@ -63,6 +64,7 @@ class Config:
         config.set("client", "server", "")
         config.set("client", "verbose", "0")
         config.set("client", "ssl_enable", "False")
+        config.set("webproject", "group", "webuser")
         config.write(open("vhm.conf", 'w'))
 
     def getboolean(self, sec, name, default=None):
@@ -96,13 +98,13 @@ if __name__ == "__main__":
     if conf.monitoring:
         print "TODO: run monitoring"
         srv.monitoring()
-        
+    
     data =  srv.get_all_projects()
     content = aray2xml(data)
     #print content
 
     """ run all script for this systems. """
-    srv.do_all_actions()
+    srv.do_all_actions(conf)
 
     """ Check all repository on this system. """
     srv.check_repo()

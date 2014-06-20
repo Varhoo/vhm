@@ -94,10 +94,9 @@ class ServerApp:
       result = self.rpc_srv.get_all_projects( self.token  )
       return result
 
-   def do_all_actions(self):
+   def do_all_actions(self, conf):
       data = self.rpc_srv.action_server_list( self.token  )
       #FIXME
-      group = "pavel"
       for it in data:
          result = self.rpc_srv.action_server_status( self.token, it["id"], 1  )
          if int(it["command_type"]) == 100:
@@ -105,8 +104,7 @@ class ServerApp:
             if d[0] == "user":
                 u = User(d[2])
                 if d[1] == "create":
-                    u.create(group, d[3])
-                print u.__dict__
+                    u.create(conf.group, d[3])
                 self.rpc_srv.set_account_uidguid(self.token, u.username, u.uid, u.gid)
                 status = 0
                 resutl = "%s %s %s" % (u.username, u.uid, u.gid)
