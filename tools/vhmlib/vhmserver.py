@@ -80,7 +80,11 @@ class ServerApp:
                 print result[1]
 
    def monitoring(self):
-        mem = psutil.virtual_memory()
+        if hasattr(psutil, "virtual_memory"):
+            # rename from version 0.5.0
+            mem = psutil.virtual_memory()
+        else:
+            mem = psutil.phymem_usage()
         cpu = psutil.cpu_percent(interval=1.)
 
         data = {
