@@ -1,5 +1,6 @@
 import os
 from setuptools import setup
+#from distutils.core import setup
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -10,12 +11,12 @@ def read(fname):
 
 setup(
     name = "vhm-client",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Pavel Studenik",
     author_email = "studenik@varhoo.cz",
     description = ("Client for manage system and project VHM."), 
     license = "GPL",
-    keywords = "Client for varhoo manage",
+    keywords = "Client for varhoo manage system",
     url = "https://github.com/Pajinek/vhm",
     packages=['vhmlib',],
     scripts=["vhm_check.py"],
@@ -24,7 +25,10 @@ setup(
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
         "License :: OSI Approved :: GNU General Public License (GPL)",
+        "Programming Language :: Python :: 2.7",
     ],
     install_requires=["psutil",],
-    #requires=["python-psutil",],
+    extras_require={
+        "psutil": "python-psutil",
+    }
 )
