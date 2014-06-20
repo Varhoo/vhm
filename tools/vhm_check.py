@@ -40,19 +40,19 @@ def aray2xml(data):
 
 class Config:
     def __init__(self):
+        path = "/etc/vhm.conf"
+
         config = ConfigParser.ConfigParser()
-        path = "vhm.conf"
         if not os.path.exists(path):
             self.create()
-        config.read(['vhm.conf', os.path.expanduser('~/.vhm.conf')])
+        config.read([path, os.path.expanduser('~/.vhm.conf')])
         self.conf = config
-        print path
-
 
         self.token = self.get("client", "token")
         self.server = self.get("client", "server")
         self.verbose = self.getint("client", "verbose")
         self.monitoring = self.getboolean("client", "monitoring", default=False)
+        self.webproject = self.getboolean("client", "webproject", default=False)
         self.ssl = self.getboolean("client", "ssl_enable", default=False)
         self.group = self.get("webproject", "group")
         self.smtp = self.get("smtp", "host", default=False)
@@ -86,30 +86,33 @@ class Config:
             return default
         
  
-
 if __name__ == "__main__":
-    # for testing on localhost
+    # config file
     conf = Config()    
  
     srv = ServerApp(conf)
     srv.login(conf.token)
 
-    # run only for monitoring
-    if conf.monitoring:
-        print "TODO: run monitoring"
-        srv.monitoring()
-    
-    data =  srv.get_all_projects()
-    content = aray2xml(data)
-    #print content
+    # pick up and run events
 
-    """ run all script for this systems. """
+    """ Run all script for this systems. """
     srv.do_all_actions(conf)
 
-    """ Check all repository on this system. """
-    srv.check_repo()
+    if conf.monitoring:
+    """ send data for monitoring """
+        srv.monitoring()
+   
+    if conf.webproject: 
+    """ create repo for web project - apache2/uwsgi"""
+        data =  srv.get_all_projects()
+        content = aray2xml(data)
 
-    """ Recount size of full disk in all project on this system. """
-    srv.check_size_all()
+        """ Check all repository on this system. """
+        srv.check_repo()
+
+        """ Recount size of full disk in all project on this system. """
+        srv.check_size_all()
+
+
 
 
