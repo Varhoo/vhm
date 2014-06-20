@@ -33,6 +33,7 @@ class ActionServer(models.Model):
     server = models.ForeignKey(Server)
     status = models.IntegerField(default=0, choices=STATUS_ENUM)
     command = models.TextField(blank=True, null=True)
+    command_type = models.IntegerField(default=0)
     role = models.CharField(max_length=64, default="root")
     result = models.TextField(blank=True)   
     exit_code = models.IntegerField(blank=True, null=True)
@@ -162,12 +163,12 @@ def set_domain_expirate(token,domain,expirate):
         except Domain.DoesNotExist:
             return False
 
-def set_account_uidguid(token,id,uid,gid):
+def set_account_uidguid(token, user, uid, gid):
         r = check_auth_host(token)
         if r == False:
             return r
         try:
-            account = Account.objects.get(id=id,server__token=token)
+            account = Account.objects.get(user=user, server__token=token)
             account.uid=uid
             account.gid=gid
             account.save()
@@ -191,7 +192,8 @@ def action_server_list(token):
         if srv == False:
             return srv
         actions = ActionServer.objects.filter(server__token=token, status=0)
-        return [{"id": it.id, "command": it.command, "role": it.role, "srv": srv.os_type} for it in actions]
+        return [{"id": it.id, "command": it.command, "command_type": it.command_type, \
+                 "role": it.role, "srv": srv.os_type} for it in actions]
 
 def action_server_status(token, id, status, result="", exit_code=None):
         action = ActionServer.objects.get(server__token=token, id=id, status__in=(0, 1))

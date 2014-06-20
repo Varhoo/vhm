@@ -99,6 +99,13 @@ class Account(models.Model):
         verbose_name = _('Account')
         verbose_name_plurar = _('Acounts')
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            pass
+        else:
+            pass
+        super(Account, self).save(*args, **kwargs)
+
 
 class Project(models.Model):
     account = models.ForeignKey(Account)

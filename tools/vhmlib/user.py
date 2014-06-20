@@ -1,6 +1,7 @@
 import commands
 import pwd
 import sys
+import os
 
 class User:
     def __init__(self, username):
@@ -23,13 +24,18 @@ class User:
 
     def create(self, group, homedir):
         if self.exist(): return
-        command = "useradd -g %s %s" % (group, self.username)
+
+        if not os.path.exists(homedir):
+            os.makedirs(homedir)
+
+        command = "useradd -g %s -d %s %s" % (group, homedir, self.username)
         data = commands.getstatusoutput(command)
         if data[0] != 0:
             msg = "USER Error: Can't create user.\n"
             sys.stderr.write(msg) 
             return False
-        command = "usermod -d %s %s" % (homedir, self.username)
+
+        command = "chown %s:%s -R %s" % (self.username, group, homedir)
         data = commands.getstatusoutput(command)
         self.check()
 
@@ -52,6 +58,6 @@ if __name__=="__main__":
     print u.__dict__
 
     u = User("pavel2")
-    #u.create("pavel", "/var/www/")
-    #u.delete()
+    u.create("pavel", "/var/www/testing")
+    u.delete()
     print u.__dict__

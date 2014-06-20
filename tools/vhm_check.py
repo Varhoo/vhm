@@ -101,14 +101,13 @@ if __name__ == "__main__":
     content = aray2xml(data)
     #print content
 
+    """ run all script for this systems. """
+    srv.do_all_actions()
+
     """ Check all repository on this system. """
     srv.check_repo()
 
     """ Recount size of full disk in all project on this system. """
     srv.check_size_all()
 
-    """ run all script for this systems. """
-    srv.do_all_actions()
-
-    sys.exit(0)
 
