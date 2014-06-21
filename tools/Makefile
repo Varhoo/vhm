@@ -5,3 +5,6 @@ rpm:
 
 pip:
 	python setup.py sdist upload
+
+build:
+	python setup.py sdist

@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name = "vhm-client",
-    version = "0.0.4",
+    version = "0.0.5",
     author = "Pavel Studenik",
     author_email = "studenik@varhoo.cz",
     description = ("Client for manage system and project VHM."), 
@@ -19,7 +19,7 @@ setup(
     keywords = "Client for varhoo manage system",
     url = "https://github.com/Pajinek/vhm",
     packages=['vhmlib',],
-    scripts=["vhm_check.py"],
+    scripts=["vhm_check.py", "vhmcli.py"],
     long_description=read('README'),
     classifiers=[
         "Development Status :: 3 - Alpha",

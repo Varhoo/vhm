@@ -4,6 +4,9 @@ import utils
 from repository import *
 import psutil
 from user import User
+import requests
+import errno
+from socket import error as socket_error
 
 
 def getFolderSize(folder):
@@ -20,15 +23,21 @@ def getFolderSize(folder):
 class ServerApp:
    def __init__(self, conf):
       protocol = "http" if not conf.ssl else "https"
-      url = "%s://%s/xmlrpc/?get=test" % (protocol, conf.server) 
-      self.rpc_srv = xmlrpclib.ServerProxy(url, verbose=conf.verbose)
+      self.url = "%s://%s/xmlrpc/" % (protocol, conf.server) 
+      self.rpc_srv = xmlrpclib.ServerProxy(self.url, verbose=conf.verbose)
       self.conf = conf
 
    def login(self, token):
       self.token = token
-      ping = self.rpc_srv.ping(self.token)
+      try:
+          ping = self.rpc_srv.ping(self.token)
+      except socket_error:
+          print "ERROR: it's not possible to connect %s" % self.url
+          return False
+
       if not ping:
            print "INFO: token does not exist"
+           return False
       if self.conf.verbose > 0:
           print self.conf.server, ping
 
@@ -149,9 +158,7 @@ class ServerApp:
       return res[0]
 
    def send_file(self, filepath):
-      f = open(filepath)
-      data = f.read()
-      f.close()
+      r = requests.post(self.url, files={filepath: open(filepath, 'rb')})
       # need use better  way to upload file
       #self.rpc_srv.send_file( self.token, data)
 
