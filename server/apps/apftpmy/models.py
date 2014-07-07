@@ -148,15 +148,15 @@ class ProjectProc(models.Model):
                     "id": self.id, 
                     "uid": self.project.account.user,
                     "gid": self.project.get_group(),
-                    "pythonpath": self.project.account.path,
+                    "pythonpath": self.project.get_path(),
                     "processes": 1,
                     "optimize": 0,
                     "limit-as": 128,
                     "master": True,
                     "no-orphans": True, 
-                    "pidfile": "%s/%d-%s.pid" % (self.project.get_path(), self.id, self.project.account.name),
+                    "pidfile": "%s/%d-%s.pid" % (self.project.path, self.id, self.project.account.name),
                     "daemonize": "%s/%d-%s.log" % (self.project.get_path(), self.id, self.project.account.name),
-                    "chdir": self.project.account.path,
+                    "chdir": self.project.get_path(),
                }
         for it in params:
             data.update(it)

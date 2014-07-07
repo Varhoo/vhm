@@ -41,6 +41,8 @@ class ServerApp:
       if self.conf.verbose > 0:
           print self.conf.server, ping
 
+      return True
+
    def check_size_all(self):
       """
       Get size of homedir and update data on the server
@@ -117,6 +119,7 @@ class ServerApp:
          if int(it["command_type"]) == 100:
             d = it["command"].split()
             print d
+            # check users
             if d[0] == "user":
                 u = User(d[2])
                 if d[1] == "create":
@@ -124,6 +127,10 @@ class ServerApp:
                 self.rpc_srv.set_account_uidguid(self.token, u.username, u.uid, u.gid)
                 status = 0
                 resutl = "%s %s %s" % (u.username, u.uid, u.gid)
+            # check uwsgi-manager config /etc/uwsgi.conf
+            if d[0] == "uwsgi" and d[1] == "check":
+                print self.rpc_srv.get_all_projects(self.token)
+                status = 1
          else:
              if os.geteuid() == 0:
                  cmd =  "su %s -c '%s'" % (it["role"], it["command"])
