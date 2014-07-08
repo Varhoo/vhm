@@ -20,7 +20,7 @@ def account_save(sender, instance, **kwargs):
 @receiver(post_save, sender=ProjectSetting)
 def project_save(sender, instance, **kwargs):
     if kwargs["created"]:
-        a = ActionServer(command="user project %s %s" % (instance.user, instance.path), command_type=100, server=instance.server)
+        a = ActionServer(command="project update %s" % (instance.id), command_type=100, server=instance.account.server)
         a.save()
     else:
        pass 

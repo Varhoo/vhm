@@ -23,6 +23,7 @@ class Config:
         self.webproject = self.getboolean("client", "webproject", default=False)
         self.ssl = self.getboolean("client", "ssl_enable", default=False)
         self.group = self.get("webproject", "group")
+        self.uwsgifile = self.get("webproject", "file", "/etc/uwsgi/config.xml")
         self.smtp = self.get("smtp", "host", default=False)
 
     def create(self, path):
@@ -35,6 +36,7 @@ class Config:
         config.set("client", "verbose", "0")
         config.set("client", "ssl_enable", "False")
         config.set("webproject", "group", "webuser")
+        config.set("webproject", "file", "/etc/uwsgi/config.xml")
         config.write(open(path, 'w'))
 
     def getboolean(self, sec, name, default=None):

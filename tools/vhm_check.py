@@ -15,29 +15,6 @@ from vhmlib.vhmserver import *
 from vhmlib.vhmcli import *
 from vhmlib.config import Config
 
-ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
-        'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
-        'pidfile', "wsgi-file"]
-
-
-def aray2xml(data):
-    def tag(tag, value):
-        return "      <%s>%s</%s>" % (tag, value, tag)
-
-    content = ["<server>"]
-    for proc in data:
-        content.append("   <uwsgi id=\"%d\">" % proc["id"])
-        for key, it in proc.iteritems():
-            if not key in ENABLE_UWSGI_TAG: continue
-            if type(it) == bool:
-                content.append("      <%s/>" % key)
-            else:
-                content.append(tag(key, it))
-        content.append("   </uwsgi>")
-    content.append("</server>")
-    return "\n".join(content)
-
- 
 if __name__ == "__main__":
     # config file
     conf = Config()    

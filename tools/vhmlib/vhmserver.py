@@ -8,6 +8,9 @@ import requests
 import errno
 from socket import error as socket_error
 
+ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
+        'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
+        'pidfile', "wsgi-file"]
 
 def getFolderSize(folder):
     total_size = os.path.getsize(folder)
@@ -18,6 +21,23 @@ def getFolderSize(folder):
         elif os.path.isdir(itempath):
             total_size += getFolderSize(itempath)
     return total_size
+
+def aray2xml(data):
+    def tag(tag, value):
+        return "      <%s>%s</%s>" % (tag, value, tag)
+
+    content = ["<server>"]
+    for proc in data:
+        content.append("   <uwsgi id=\"%d\">" % proc["id"])
+        for key, it in proc.iteritems():
+            if not key in ENABLE_UWSGI_TAG: continue
+            if type(it) == bool:
+                content.append("      <%s/>" % key)
+            else:
+                content.append(tag(key, it))
+        content.append("   </uwsgi>")
+    content.append("</server>")
+    return "\n".join(content)
 
 
 class ServerApp:
@@ -129,8 +149,9 @@ class ServerApp:
                 resutl = "%s %s %s" % (u.username, u.uid, u.gid)
             # check uwsgi-manager config /etc/uwsgi.conf
             if d[0] == "uwsgi" and d[1] == "check":
-                print self.rpc_srv.get_all_projects(self.token)
-                status = 1
+                data = self.rpc_srv.get_all_projects(self.token)
+                print aray2xml(data)
+                status = 0
          else:
              if os.geteuid() == 0:
                  cmd =  "su %s -c '%s'" % (it["role"], it["command"])

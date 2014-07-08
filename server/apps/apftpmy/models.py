@@ -154,8 +154,8 @@ class ProjectProc(models.Model):
                     "limit-as": 128,
                     "master": True,
                     "no-orphans": True, 
-                    "pidfile": "%s/%d-%s.pid" % (self.project.path, self.id, self.project.account.name),
-                    "daemonize": "%s/%d-%s.log" % (self.project.get_path(), self.id, self.project.account.name),
+                    "pidfile": "%s/%d-%s.pid" % (self.project.account.path, self.id, self.project.account.name),
+                    "daemonize": "%s/log/%d-%s.log" % (self.project.account.path, self.id, self.project.account.name),
                     "chdir": self.project.get_path(),
                }
         for it in params:
