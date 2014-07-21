@@ -10,7 +10,7 @@ from socket import error as socket_error
 
 ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
         'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
-        'pidfile', "wsgi-file", "http"]
+        'pidfile', "wsgi-file", "socket"]
 
 def getFolderSize(folder):
     total_size = os.path.getsize(folder)
@@ -133,6 +133,9 @@ class ServerApp:
 
    def write_uwsgi(self, conf):
       data = self.rpc_srv.get_all_projects(self.token)
+      for it in data:
+          if hasattr(conf, "group"):
+              it["gid"]=conf.group
       content = aray2xml(data)
       with open(conf.uwsgifile, "w") as f:
         f.write(content)
