@@ -70,7 +70,7 @@ class ServerApp:
       result = self.rpc_srv.get_all_account( self.token  )
       for it in result:
          size = getFolderSize(it["path"])         
-         result = self.rpc_srv.set_account_size( self.token, it["id"], size )
+         result = self.rpc_srv.set_account_size( self.token, it["id"], str(size) )
 
    def check_userid_all(self):
       result = self.rpc_srv.get_all_account( self.token  )
