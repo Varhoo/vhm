@@ -33,14 +33,17 @@ if __name__ == "__main__":
     """ send data for monitoring """
     if conf.monitoring:
         srv.monitoring()
-   
+
+    srv.write_uwsgi(conf)
+    #sys.exit(1)
+
     """ create repo for web project - apache2/uwsgi"""
     if conf.webproject: 
         data =  srv.get_all_projects()
         content = aray2xml(data)
 
         """ Check all repository on this system. """
-        srv.check_repo()
+        #srv.check_repo()
 
         """ Recount size of full disk in all project on this system. """
         srv.check_size_all()

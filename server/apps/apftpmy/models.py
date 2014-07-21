@@ -154,14 +154,14 @@ class ProjectProc(models.Model):
                     "limit-as": 128,
                     "master": True,
                     "no-orphans": True, 
-                    "pidfile": "%s/%d-%s.pid" % (self.project.account.path, self.id, self.project.account.name),
-                    "daemonize": "%s/log/%d-%s.log" % (self.project.account.path, self.id, self.project.account.name),
+                    "pidfile": os.path.abspath("%s/%d-%s.pid" % (self.project.account.path, self.id, self.project.account.name)),
+                    "daemonize":  os.path.abspath("%s/log/%d-%s.log" % (self.project.account.path, self.id, self.project.account.name)),
                     "chdir": self.project.get_path(),
                }
         for it in params:
             data.update(it)
         if self.mode == 2:
-            data["http"] = "%d" % ( self.id + 8000)
+            data["socket"] = "%s:%d" % ("0.0.0.0", self.id + 8000)
             if data.has_key("wsgi-file") and not data["wsgi-file"].startswith("/"):
                 data["wsgi-file"] = "%s/%s" % (self.project.get_path(), data["wsgi-file"])
         return data
