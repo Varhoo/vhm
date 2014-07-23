@@ -140,6 +140,14 @@ class ProjectProc(models.Model):
     power = models.IntegerField(choices=POWER_ENUM, default=1);
     mode = models.IntegerField('mode', choices=MODE_ENUM)
     mode_params = models.TextField(max_length=256, null=True, blank=True)
+    is_running = models.BooleanField(_('Is running'), default=False)
+
+    def is_enabled(self):
+        return self.project.is_enabled
+    is_enabled.boolean = True
+
+    def get_account(self):
+        return self.project.account
 
     def get_data(self):
         params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
@@ -154,8 +162,12 @@ class ProjectProc(models.Model):
                     "limit-as": 128,
                     "master": True,
                     "no-orphans": True, 
-                    "pidfile": os.path.abspath("%s/%d-%s.pid" % (self.project.account.path, self.id, self.project.account.name)),
-                    "daemonize":  os.path.abspath("%s/log/%d-%s.log" % (self.project.account.path, self.id, self.project.account.name)),
+                    "pidfile": os.path.abspath("%s/%d-%s.pid" % \
+                           (self.project.account.path, self.id, \
+                            self.project.account.name)),
+                    "daemonize":  os.path.abspath("%s/log/%d-%s.log" % \
+                           (self.project.account.path, self.id, \
+                            self.project.account.name)),
                     "chdir": self.project.get_path(),
                }
         for it in params:

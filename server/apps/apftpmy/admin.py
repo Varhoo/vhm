@@ -79,8 +79,12 @@ class AccountAdmin(admin.ModelAdmin):
         obj.save()
 
 
+class ProjectProcAdmin(admin.ModelAdmin):
+    list_display = ('project', "get_account", 'power', "mode", 'is_enabled', 'is_running')
+
+
 class ProjectSettingAdmin(admin.ModelAdmin):
-    list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled',)
+    list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled')
     #fieldsets = (
     #    (None, {
     #        'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
@@ -121,6 +125,7 @@ class DomainAdmin(admin.ModelAdmin):
 admin.site.register(Server)
 admin.site.register(Customer)
 admin.site.register(DomainAlias)
+admin.site.register(ProjectProc, ProjectProcAdmin)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Ftpuser, FtpuserAdmin)
