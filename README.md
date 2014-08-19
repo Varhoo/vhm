@@ -34,36 +34,32 @@ python vhm_check.py
 
 Default template for uwsgi socket (Python):
 <pre>
-```html
-<uwsgi id="{{id}}">
-      <wsgi-file>{{root_proc}}/wsgi.py</wsgi-file>
-      <processes>1</processes>
-      <chdir>{{root_proc}}</chdir>
-      <uid>{{uid}}</uid>
-      <gid>{{gid}}</gid>
-      <pythonpath>{{root_proc}}</pythonpath>
-      <limit-as>256</limit-as>
-      <optimize>0</optimize>
-      <daemonize>{{root}}log/{{id}}-{{name}}.log</daemonize>
-      <master/>
-      <home>/opt/env</home>
-      <no-orphans/>
-      <pidfile>{{root}}{{id}}-{{name}}.pid</pidfile>
-      <socket>0.0.0.0:{{port}}</socket>
-</uwsgi>
-```
+&#x3C;uwsgi id=&#x22;{{id}}&#x22;&#x3E;
+      &#x3C;wsgi-file&#x3E;{{root_proc}}/wsgi.py&#x3C;/wsgi-file&#x3E;
+      &#x3C;processes&#x3E;1&#x3C;/processes&#x3E;
+      &#x3C;chdir&#x3E;{{root_proc}}&#x3C;/chdir&#x3E;
+      &#x3C;uid&#x3E;{{uid}}&#x3C;/uid&#x3E;
+      &#x3C;gid&#x3E;{{gid}}&#x3C;/gid&#x3E;
+      &#x3C;pythonpath&#x3E;{{root_proc}}&#x3C;/pythonpath&#x3E;
+      &#x3C;limit-as&#x3E;256&#x3C;/limit-as&#x3E;
+      &#x3C;optimize&#x3E;0&#x3C;/optimize&#x3E;
+      &#x3C;daemonize&#x3E;{{root}}log/{{id}}-{{name}}.log&#x3C;/daemonize&#x3E;
+      &#x3C;master/&#x3E;
+      &#x3C;home&#x3E;/opt/env&#x3C;/home&#x3E;
+      &#x3C;no-orphans/&#x3E;
+      &#x3C;pidfile&#x3E;{{root}}{{id}}-{{name}}.pid&#x3C;/pidfile&#x3E;
+      &#x3C;socket&#x3E;0.0.0.0:{{port}}&#x3C;/socket&#x3E;
+&#x3C;/uwsgi&#x3E;
 </pre>
 
 And basic template looks as follows (PHP):
 <pre>
-```html
-<VirtualHost *:80>
+&#x3C;VirtualHost *:80&#x3E;
         ServerAdmin {{ admin_email }}
         ServerName {{domain}}
 {% for alias in alias_list %}
         ServerAlias {{ alias }}
 {% endfor %}
         DocumentRoot {{root_proc}}
-</VirtualHost>
-```
+&#x3C;/VirtualHost&#x3E;
 </pre>
