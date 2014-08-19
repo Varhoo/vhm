@@ -30,3 +30,36 @@ Run client
 cd tools
 python vhm_check.py
 </pre>
+
+
+Default template for uwsgi socket (Python):
+<pre>
+<uwsgi id="{{id}}">
+      <wsgi-file>{{root_proc}}/wsgi.py</wsgi-file>
+      <processes>1</processes>
+      <chdir>{{root_proc}}</chdir>
+      <uid>{{uid}}</uid>
+      <gid>{{gid}}</gid>
+      <pythonpath>{{root_proc}}</pythonpath>
+      <limit-as>256</limit-as>
+      <optimize>0</optimize>
+      <daemonize>{{root}}log/{{id}}-{{name}}.log</daemonize>
+      <master/>
+      <home>/opt/env</home>
+      <no-orphans/>
+      <pidfile>{{root}}{{id}}-{{name}}.pid</pidfile>
+      <socket>0.0.0.0:{{port}}</socket>
+</uwsgi>
+</pre>
+
+And basic template looks as follows (PHP):
+<pre>
+<VirtualHost *:80>
+        ServerAdmin {{ admin_email }}
+        ServerName {{domain}}
+{% for alias in alias_list %}
+        ServerAlias {{ alias }}
+{% endfor %}
+        DocumentRoot {{root_proc}}
+</VirtualHost>
+</pre>

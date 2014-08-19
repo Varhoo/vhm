@@ -197,14 +197,20 @@ class ProjectProc(models.Model):
         account = self.project.account
         alias_list = [it.site for it in DomainAlias.objects.filter(project=project)]
         data = {
+            "id": self.id,
+            "name": project.account.name,
+            "root": self.project.account.path,
             "root_proc": project.get_path(),
             "admin_email": account.owner.email,
             "domain": project.site,
             "alias_list": alias_list,
+            "uid": project.account.user,
+            "gid": project.get_group(),
+            "port": "%d" % (8000 + self.id),
         }
         c = Context(data)
         t = Template(self.template.content)
-        print t.render(c)
+        #print t.render(c)
         return t.render(c)
 
 
