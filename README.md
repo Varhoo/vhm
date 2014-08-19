@@ -34,6 +34,7 @@ python vhm_check.py
 
 Default template for uwsgi socket (Python):
 <pre>
+```html
 <uwsgi id="{{id}}">
       <wsgi-file>{{root_proc}}/wsgi.py</wsgi-file>
       <processes>1</processes>
@@ -50,10 +51,12 @@ Default template for uwsgi socket (Python):
       <pidfile>{{root}}{{id}}-{{name}}.pid</pidfile>
       <socket>0.0.0.0:{{port}}</socket>
 </uwsgi>
+```
 </pre>
 
 And basic template looks as follows (PHP):
 <pre>
+```html
 <VirtualHost *:80>
         ServerAdmin {{ admin_email }}
         ServerName {{domain}}
@@ -62,4 +65,5 @@ And basic template looks as follows (PHP):
 {% endfor %}
         DocumentRoot {{root_proc}}
 </VirtualHost>
+```
 </pre>
