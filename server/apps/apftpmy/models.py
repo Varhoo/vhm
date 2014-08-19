@@ -3,16 +3,20 @@
 #Email: studenik@varhoo.cz
 #Date: 10.2.2010
 
-from django.db import models
 import settings, random
 import os
 from datetime import *
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.models import User
 
 from filebrowser.fields import FileBrowseField
 from apps.apftpmy.utils import *
-from django.template.defaultfilters import filesizeformat
-from django.contrib.auth.models import User
+from django.template import Context
+from django.template import Template
+
 
 POWER_ENUM = (
   (1, "Low"), 
@@ -28,18 +32,15 @@ REPOS_ENUM = (
 
 
 MODE_ENUM = (
-  (0, "None"), 
-  (1, "Apache Wsgi"),
-  (2, "Apache proxy uWsgi"),
+  (1, "Apache"),
+  (2, "VHM-manager"),
 )
 
 OS_ENUM = (
   (0,"Ubuntu/Debian"), 
   (1,"Fedora/CentOS/RHEL"),
 )
-#i18n
-from django.utils.translation import ugettext_lazy as _
-# Create your models here.
+
 
 class Domain(models.Model):
     owner = models.ForeignKey(User)
@@ -113,8 +114,8 @@ class Project(models.Model):
     site = models.CharField(max_length=126)
     path = models.CharField(max_length=126)
     is_enabled = models.BooleanField(_('Is valid'))
-    created = models.DateTimeField(_('Created'), default=datetime.now() )
-    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now(), blank=True)
+    created = models.DateTimeField(_('Created'), default=datetime.now )
+    last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now, blank=True)
     note = models.TextField(_('Note'), blank=True)
 
     def get_path(self):
@@ -135,11 +136,21 @@ class ProjectSetting(Project):
     last_update = models.DateTimeField(_('Last Update'), null=True, blank=True)
 
 
+class TemplateProc(models.Model):
+    title = models.CharField(max_length=256)
+    file_type = models.IntegerField(choices=MODE_ENUM)
+    content = models.TextField()
+    comment = models.TextField(blank=True)
+    last_update = models.DateTimeField(_('Last Update'), default=datetime.now)
+
+    def __unicode__(self):
+        return "%s" % self.title
+
+
 class ProjectProc(models.Model):
     project = models.ForeignKey(ProjectSetting)
-    power = models.IntegerField(choices=POWER_ENUM, default=1);
-    mode = models.IntegerField('mode', choices=MODE_ENUM)
-    mode_params = models.TextField(max_length=256, null=True, blank=True)
+    template = models.ForeignKey(TemplateProc)
+    params = models.TextField(max_length=256, null=True, blank=True)
     is_running = models.BooleanField(_('Is running'), default=False)
 
     def is_enabled(self):
@@ -178,6 +189,24 @@ class ProjectProc(models.Model):
                 data["wsgi-file"] = "%s/%s" % (self.project.get_path(), data["wsgi-file"])
         return data
 
+    def get_template(self):
+        return self.template.content
+
+    def get_raw(self):
+        project = self.project
+        account = self.project.account
+        alias_list = [it.site for it in DomainAlias.objects.filter(project=project)]
+        data = {
+            "root_proc": project.get_path(),
+            "admin_email": account.owner.email,
+            "domain": project.site,
+            "alias_list": alias_list,
+        }
+        c = Context(data)
+        t = Template(self.template.content)
+        print t.render(c)
+        return t.render(c)
+
 
 class DomainAlias(models.Model):	
     site = models.CharField(max_length=126)
@@ -215,7 +244,7 @@ class Customer(models.Model):
 class Invoice(models.Model):
     user = models.ForeignKey(Customer)
     account = models.ForeignKey(Account)
-    date = models.DateField(default=datetime.now())
+    date = models.DateField(default=datetime.now)
     month = models.IntegerField(help_text="Pocet zaplacenych mesicu služby")
     size = models.IntegerField(help_text="Počet pronajatých GB")
     sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy", default=0)

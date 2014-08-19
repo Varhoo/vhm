@@ -80,8 +80,14 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 class ProjectProcAdmin(admin.ModelAdmin):
-    list_display = ('project', "get_account", 'power', "mode", 'is_enabled', 'is_running')
-
+    list_display = ('project', "get_account", "template", 'is_enabled', 'is_running')
+    fieldsets = (
+        (None, {
+            'fields':
+                ('project', ('template', "is_running"), "params", ("get_raw", "get_template"))
+            }),
+        )
+    readonly_fields = ("is_running", "get_raw", "get_template")
 
 class ProjectSettingAdmin(admin.ModelAdmin):
     list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled')
@@ -125,6 +131,7 @@ class DomainAdmin(admin.ModelAdmin):
 admin.site.register(Server)
 admin.site.register(Customer)
 admin.site.register(DomainAlias)
+admin.site.register(TemplateProc)
 admin.site.register(ProjectProc, ProjectProcAdmin)
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
