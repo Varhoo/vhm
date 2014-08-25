@@ -1,3 +1,11 @@
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
+
+
 import sys, os, re
 import xmlrpclib, commands
 import utils
@@ -14,8 +22,8 @@ ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath',
         'pidfile', "wsgi-file", "socket"]
 
 ROOT_HTTPD = {
-  0: "./etc/apache2/sites-enabled/",
-  1: "./etc/httpd/sites-enabled/"
+  0: "/etc/apache2/sites-enabled/", # site enable for debian
+  1: "/etc/httpd/conf.d/" # site enable for fedora
 }
 
 def getFolderSize(folder):

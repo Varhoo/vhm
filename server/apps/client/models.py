@@ -1,3 +1,9 @@
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
 
 from datetime import datetime
 from django.db import models

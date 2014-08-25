@@ -1,6 +1,14 @@
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
+
 from models import *
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+
 
 class MultiDBModelAdmin(admin.ModelAdmin):
     # A handy constant for the name of the alternate database.

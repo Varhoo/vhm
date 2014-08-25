@@ -1,3 +1,11 @@
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
+
+
 from models import *
 from django.contrib import admin
 from django.core.urlresolvers import reverse
@@ -18,7 +26,6 @@ class InvoiceInline(admin.TabularInline):
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'tel') 
     inlines = [DomainInline, InvoiceInline]
-
 
 
 class InvoiceAdmin(admin.ModelAdmin):

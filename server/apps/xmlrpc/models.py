@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
-#Author: Pavel Studeník
-#Email: studenik@varhoo.cz
-#Date: 10.2.2010
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
 
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from django.http import HttpResponse

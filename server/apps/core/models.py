@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
-#Author: Pavel Studeník
-#Email: studenik@varhoo.cz
-#Date: 10.2.2010
+#!/usr/bin/python
+#
+# coding: utf-8 
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.2.2010
 
 import settings, random
 import os
@@ -15,7 +17,6 @@ from django.template import Context
 from django.template import Template
 
 from utils import *
-
 
 
 POWER_ENUM = (
