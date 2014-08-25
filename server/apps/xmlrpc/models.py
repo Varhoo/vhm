@@ -11,8 +11,9 @@ from django.db import models
 from datetime import datetime, date
 from django.utils.translation import ugettext_lazy as _
 
-from apps.apftpmy.models import *
+from apps.core.models import *
 from apps.monitoring.models import *
+
 
 STATUS_ENUM = (
    (0, "Waiting"),
@@ -20,7 +21,6 @@ STATUS_ENUM = (
    (2, "Done"),
    (3, "Error"),
 )
-
 
 
 class Action(models.Model):
@@ -152,18 +152,37 @@ def set_account_size(token, id, size):
         except:
             return False
 
+def get_projectproc(token, id):
+    r = check_auth_host(token)
+    if r == None:
+        return r
+    procs = ProjectProc.objects.filter(project__id=id, project__account__server=r, template__file_type=MODE_ENUM_APACHE)
+    data = []
+    for it in procs:
+        filetype = it.template.file_type
+        content = it.get_raw()
+        data.append((MODE_ENUM_APACHE, "%s" % content, it.project.account.name, r.os_type))
+
+    procs = ProjectProc.objects.filter(project__id=id, project__account__server=r, template__file_type=MODE_ENUM_VHM)
+    if len(procs) > 0:
+        procs = ProjectProc.objects.filter(project__account__server=r, template__file_type=MODE_ENUM_VHM)
+        for it in procs:
+            content = it.get_raw()
+            data.append((MODE_ENUM_VHM, "%s" % content, it.project.account.name, r.os_type))
+    return data
+
 #only for main host
-def set_domain_expirate(token,domain,expirate):
-        r = check_auth(token)
-        if r != True:
-            return r
-        try:
-            dom = Domain.objects.get(name=domain)
-            dom.expirate=datetime.date(datetime.strptime(expirate,"%Y-%m-%d"))
-            dom.save()
-            return True
-        except Domain.DoesNotExist:
-            return False
+def set_domain_expirate(token, domain, expirate):
+    r = check_auth(token)
+    if r != True:
+        return r
+    try:
+        dom = Domain.objects.get(name=domain)
+        dom.expirate=datetime.date(datetime.strptime(expirate,"%Y-%m-%d"))
+        dom.save()
+        return True
+    except Domain.DoesNotExist:
+        return False
 
 def set_account_uidguid(token, user, uid, gid):
         r = check_auth_host(token)
@@ -228,6 +247,7 @@ dispatcher.register_function(get_all_projects, 'get_all_projects')
 dispatcher.register_function(set_account_size, 'set_account_size')
 #function get all data of account with repository
 dispatcher.register_function(get_all_repo, 'get_all_repo')
+dispatcher.register_function(get_projectproc, 'get_projectproc')
 dispatcher.register_function(action_for_project, 'action_for_project')
 dispatcher.register_function(set_account_uidguid, 'set_account_uidguid')
 dispatcher.register_function(set_domain_expirate, 'set_domain_expirate')

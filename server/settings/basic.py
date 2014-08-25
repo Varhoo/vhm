@@ -133,7 +133,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'apps.apftpmy',
+    'apps.core',
     'apps.ticket',
     'apps.svn_dav',
     'apps.auth',
@@ -141,6 +141,7 @@ INSTALLED_APPS = (
     'apps.xmlrpc',
     'apps.task_automatic',
     "apps.monitoring",
+    "apps.client",
     "south",
 )
 
@@ -152,7 +153,7 @@ APACHEIIS_GROUP = "webusers"
 GRAPPELLI_ADMIN_HEADLINE =  'Varhoo Administrace'
 GRAPPELLI_ADMIN_TITLE = 'Varhoo Administrace'
 
-FILEBROWSER_MEDIA_ROOT = ROOT_PATH+"/media/"
+FILEBROWSER_MEDIA_ROOT = "%s/media/" % ROOT_PATH
 FILEBROWSER_DIRECTORY = ""
 FILEBROWSER_MEDIA_URL = "/media/"
 

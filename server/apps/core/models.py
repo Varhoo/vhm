@@ -11,11 +11,11 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.models import User
-
-from filebrowser.fields import FileBrowseField
-from apps.apftpmy.utils import *
 from django.template import Context
 from django.template import Template
+
+from utils import *
+
 
 
 POWER_ENUM = (
@@ -30,15 +30,16 @@ REPOS_ENUM = (
   (2, "GIT"),
 )
 
-
+MODE_ENUM_APACHE = 1
+MODE_ENUM_VHM = 2
 MODE_ENUM = (
-  (1, "Apache"),
-  (2, "VHM-manager"),
+  (MODE_ENUM_APACHE, "Apache"),
+  (MODE_ENUM_VHM, "VHM-manager"),
 )
 
 OS_ENUM = (
-  (0,"Ubuntu/Debian"), 
-  (1,"Fedora/CentOS/RHEL"),
+  (0, "Ubuntu/Debian"), 
+  (1, "Fedora/CentOS/RHEL"),
 )
 
 
@@ -66,7 +67,7 @@ class Server(models.Model):
     description = models.TextField(_("Description"))
     total_mem = models.IntegerField(_("Total Memory"), default=0)
     total_hd = models.IntegerField(_("Total Disk"), default=0)
-    last_checked = models.DateTimeField(_("last checkdd"), null=True)
+    last_checked = models.DateTimeField(_("last checkdd"), null=True, blank=True)
     global_ip = models.IPAddressField(default="0.0.0.0")
     os_type = models.IntegerField(choices=OS_ENUM);
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
@@ -236,32 +237,5 @@ class Ftpuser(models.Model):
     	return self.userid
     class Meta:
         db_table = "ftpusers"
-
-
-class Customer(models.Model):
-    name = models.CharField(max_length=200)
-    tel = models.CharField(max_length=20)
-    email = models.EmailField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-
-
-class Invoice(models.Model):
-    user = models.ForeignKey(Customer)
-    account = models.ForeignKey(Account)
-    date = models.DateField(default=datetime.now)
-    month = models.IntegerField(help_text="Pocet zaplacenych mesicu služby")
-    size = models.IntegerField(help_text="Počet pronajatých GB")
-    sale = models.IntegerField(help_text="Sleva se započítá do celkové sumy", default=0)
-    price = models.IntegerField(help_text="Celková suma se slevou", default=0)
-    file = FileBrowseField("File", max_length=200, blank=True, null=True)
-    is_paid = models.BooleanField(default=False) 
-
-    def date_end(self):
-        return (self.date + timedelta(self.month*365/12)).strftime("%d. %m. %Y")
-
-    def __unicode__(self):
-        return "%s %s" % (self.account, self.date.isoformat())
 
 

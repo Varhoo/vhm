@@ -1,7 +1,7 @@
 
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch.dispatcher import receiver
-from apps.apftpmy.models import Account, ProjectSetting
+from apps.core.models import Account, ProjectSetting, ProjectProc
 from apps.xmlrpc.models import ActionServer
 
 @receiver(pre_delete, sender=Account)
@@ -16,7 +16,6 @@ def account_save(sender, instance, **kwargs):
     else:
        pass 
 
-
 @receiver(post_save, sender=ProjectSetting)
 def project_save(sender, instance, **kwargs):
     if kwargs["created"]:
@@ -24,3 +23,8 @@ def project_save(sender, instance, **kwargs):
         a.save()
     else:
        pass 
+
+@receiver(post_save, sender=ProjectProc)
+def project_save(sender, instance, **kwargs):
+    a = ActionServer(command="project update %s" % (instance.project.id), command_type=100, server=instance.project.account.server)
+    a.save()

@@ -1,3 +1,8 @@
+# coding: utf-8
+# Author: Pavel Studeník
+# Email: studenik@varhoo.cz
+# Date: 10.8.2014
+
 from models import *
 from django.contrib import admin
 from apps.xmlrpc.models import *

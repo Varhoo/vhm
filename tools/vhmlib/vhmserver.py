@@ -1,16 +1,22 @@
 import sys, os, re
 import xmlrpclib, commands
 import utils
-from repository import *
+import logging
 import psutil
-from user import User
 import requests
 import errno
+from user import User
 from socket import error as socket_error
+from repository import *
 
 ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
         'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
         'pidfile', "wsgi-file", "socket"]
+
+ROOT_HTTPD = {
+  0: "./etc/apache2/sites-enabled/",
+  1: "./etc/httpd/sites-enabled/"
+}
 
 def getFolderSize(folder):
     total_size = os.path.getsize(folder)
@@ -47,12 +53,15 @@ class ServerApp:
       self.rpc_srv = xmlrpclib.ServerProxy(self.url, verbose=conf.verbose)
       self.conf = conf
 
+      logging.basicConfig(level=conf.debuglevel)
+      self.log = logging
+
    def login(self, token):
       self.token = token
       try:
           ping = self.rpc_srv.ping(self.token)
       except socket_error:
-          print "ERROR: it's not possible to connect %s" % self.url
+          self.log.error("it's not possible to connect %s" % self.url)
           return False
 
       if not ping:
@@ -80,7 +89,7 @@ class ServerApp:
             u = User(it["user"])
          except TypeError:
             return False
-         print "debug: uid=%s gid=%s" % ( u.uid, u.gid )
+         self.log.debug("uid=%s gid=%s" % ( u.uid, u.gid ))
          self.rpc_srv.set_account_uidguid(self.token, u.username, u.uid, u.gid)
 
    def get_all_account(self):
@@ -102,15 +111,22 @@ class ServerApp:
                  res = update_repo_svn(it)
              elif repo_id == 2: #GIT
                  res = update_repo_git(it)
-         
+
    def apache_restart(self):
         # restart apache service
-        if count > 0:
-            command = "service apache2 restart" 
-            print "[ INFO ] \t Service apache restart ..."
-            result = commands.getstatusoutput(command)
-            if result[0] > 0:
-                print result[1]
+      command = "service apache2 reload" 
+      self.log.info("command: %s" % command)
+      result = commands.getstatusoutput(command)
+      if result[0] > 0:
+          print result[1]
+
+   def apache_reload(self):
+        # restart apache service
+      command = "service apache2 reload" 
+      self.log.info("command: %s" % command)
+      result = commands.getstatusoutput(command)
+      if result[0] > 0:
+          print result[1]
 
    def monitoring(self):
         if hasattr(psutil, "virtual_memory"):
@@ -141,26 +157,61 @@ class ServerApp:
         f.write(content)
         f.close()
 
+   def get_projectproc(self, conf, proj_id):
+    data = self.rpc_srv.get_projectproc( self.token, proj_id)
+
+    result = {}
+    for it in data:
+      key, content, name, os_type = it
+      if result not in result.keys():
+        result[key] = []
+      result[key].append([name, content])
+
+    filename = "%s%03d-%s" % (ROOT_HTTPD[os_type], proj_id, name)
+
+    if result.has_key(1):
+      # render apache_file
+      content = "\n".join([ it[1] for it in result[1]])
+      with open(filename, "w") as f:
+          f.write(content)
+          self.log.info("write to file %s" % filename)
+          f.close()
+
+    filename = conf.uwsgifile
+    if result.has_key(2):
+      # render apache_file
+      content = "\n".join([it[1] for it in result[2]])
+      with open(filename, "w") as f:
+        f.write("<vhm>\n%s\n</vhm>" % content)
+        self.log.info("write to file %s" % filename)
+        f.close()
+    return 0
+
    def do_all_actions(self, conf):
-      data = self.rpc_srv.action_server_list( self.token  )
+      data = self.rpc_srv.action_server_list( self.token )
+      result = None
       #FIXME
       for it in data:
-         result = self.rpc_srv.action_server_status( self.token, it["id"], 1  )
+
+         self.rpc_srv.action_server_status( self.token, it["id"], 1)
          if int(it["command_type"]) == 100:
             d = it["command"].split()
-            print d
-            # check users
+
+            ## check projects ##
+            if d[0] == "project":
+              if d[1] in ["create", "update"]:
+                status = self.get_projectproc( conf, int(d[2]) )
+                result = ""
+
+            ## check users ##
             if d[0] == "user":
                 u = User(d[2])
                 if d[1] == "create":
                     u.create(conf.group, d[3])
                 self.rpc_srv.set_account_uidguid(self.token, u.username, u.uid, u.gid)
                 status = 0
-                resutl = "%s %s %s" % (u.username, u.uid, u.gid)
-            # check uwsgi-manager config /etc/uwsgi.conf
-            if d[0] == "uwsgi" and d[1] == "check":
-                write_uwsgi(conf)
-                status = 0
+                result = "%s %s %s" % (u.username, u.uid, u.gid)
+
          else:
              if os.geteuid() == 0:
                  cmd =  "su %s -c '%s'" % (it["role"], it["command"])

@@ -1,7 +1,8 @@
 from django.db import models
-from apps.apftpmy.models import Server
+from apps.core.models import Server
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
+
 
 class Record(models.Model):
     server = models.ForeignKey(Server)

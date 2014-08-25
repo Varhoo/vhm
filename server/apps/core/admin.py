@@ -102,19 +102,6 @@ class ProjectSettingAdmin(admin.ModelAdmin):
         obj.owner = request.user
         obj.save()
 
-
-class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid') 
-    fieldsets = (
-        (None, {
-            'fields':
-                ('account', 'user', 'date', ('month', 'size', 'sale'), 'price',
-                'is_paid', 'file', )
-        }),) 
-    readonly_fields = ['price', ]  
-    def queryset(self, request):
-        return Invoice.objects.filter(account__owner=request.user)
-
     
 class DomainAdmin(admin.ModelAdmin):
     list_display = ('name', 'expirate', 'description', 'check_pay')
@@ -128,13 +115,15 @@ class DomainAdmin(admin.ModelAdmin):
         obj.save()
 
 
+class TemplateProcAdmin(admin.ModelAdmin):
+    list_display = ('title', 'file_type', )
+
+
 admin.site.register(Server)
-admin.site.register(Customer)
 admin.site.register(DomainAlias)
-admin.site.register(TemplateProc)
+admin.site.register(TemplateProc, TemplateProcAdmin)
 admin.site.register(ProjectProc, ProjectProcAdmin)
 admin.site.register(Account, AccountAdmin)
-admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Ftpuser, FtpuserAdmin)
 admin.site.register(ProjectSetting, ProjectSettingAdmin)
 admin.site.register(Domain, DomainAdmin)
