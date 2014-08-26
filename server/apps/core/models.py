@@ -1,7 +1,6 @@
 #!/usr/bin/python
-#
 # coding: utf-8 
-# Author: Pavel Studeník
+# Author: Pavel Studenik
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
