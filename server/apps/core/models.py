@@ -17,6 +17,8 @@ from django.template import Template
 
 from utils import *
 
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 
 POWER_ENUM = (
   (1, "Low"), 
@@ -209,11 +211,17 @@ class ProjectProc(models.Model):
             "gid": project.get_group(),
             "port": "%d" % (8000 + self.id),
         }
+        params = [ dict([it.split("=")]) for it in self.params.split("\n") if it]
+        for it in params:
+            data.update(it)
         c = Context(data)
         t = Template(self.template.content)
         #print t.render(c)
         return t.render(c)
 
+    def get_raw_safe(self):
+        s = self.get_raw()
+        return mark_safe(escape(s).encode('ascii', 'xmlcharrefreplace'))
 
 class DomainAlias(models.Model):	
     site = models.CharField(max_length=126)

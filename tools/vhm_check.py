@@ -16,7 +16,7 @@ from vhmlib.vhmcli import *
 from vhmlib.config import Config
 import logging
 
-if __name__ == "__main__":
+def main():
     # config file
     conf = Config()    
  
@@ -56,6 +56,8 @@ if __name__ == "__main__":
         """ Recount size of full disk in all project on this system. """
         srv.check_size_all()
 
+if __name__ == "__main__":
+    main()
 
 
 

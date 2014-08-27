@@ -91,10 +91,10 @@ class ProjectProcAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields':
-                ('project', ('template', "is_running"), "params", ("get_raw", "get_template"))
+                ('project', ('template', "is_running"), "params", ("get_raw_safe", "get_template"))
             }),
         )
-    readonly_fields = ("is_running", "get_raw", "get_template")
+    readonly_fields = ("is_running", "get_raw_safe", "get_template")
 
 class ProjectSettingAdmin(admin.ModelAdmin):
     list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled')

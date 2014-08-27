@@ -63,3 +63,49 @@ And basic template looks as follows (PHP):
         DocumentRoot {{root_proc}}
 &#x3C;/VirtualHost&#x3E;
 </pre>
+
+Basic apache proxy configuration:
+
+<pre>
+&lt;VirtualHost _default_:443&gt;
+        ServerAdmin {{ admin_email }}
+        ServerName {{domain}}
+{% for alias in alias_list %}
+        ServerAlias {{ alias }}
+{% endfor %}
+          ProxyPass / uwsgi://0.0.0.0:{{port}}/
+        ProxyPassReverse / uwsgi://0.0.0.0:{{port}}/
+&lt;/VirtualHost&gt;
+</pre>
+
+advanced way to configure apache proxy looks following:
+
+<pre>
+&lt;VirtualHost _default_:443&gt;
+        ServerAdmin {{ admin_email }}
+        ServerName {{domain}}
+{% for alias in alias_list %}
+        ServerAlias {{ alias }}
+{% endfor %}
+  &lt;Location /media/&gt;
+       SetHandler None
+       Order deny,allow
+       Allow from all
+       Options -Indexes
+  &lt;/Location&gt;
+  &lt;Location /static/&gt;
+       SetHandler None
+       Order deny,allow
+       Allow from all
+       Options -Indexes
+  &lt;/Location&gt;
+  alias /media/ {{root_proc}}{{media}}
+  alias /static/ {{root_proc}}{{static}}
+  ProxyPreserveHost On
+        ProxyErrorOverride Off
+  ProxyPass /media !
+  ProxyPass /static !
+        ProxyPass / uwsgi://0.0.0.0:{{port}}/
+        ProxyPassReverse / uwsgi://0.0.0.0:{{port}}/
+&lt;/VirtualHost&gt;
+</pre>
