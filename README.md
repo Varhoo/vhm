@@ -81,7 +81,7 @@ Basic apache proxy configuration:
 advanced way to configure apache proxy looks following:
 
 <pre>
-&lt;VirtualHost _default_:443&gt;
+&lt;VirtualHost *:80&gt;
         ServerAdmin {{ admin_email }}
         ServerName {{domain}}
 {% for alias in alias_list %}

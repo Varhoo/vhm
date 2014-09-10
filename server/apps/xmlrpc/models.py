@@ -153,23 +153,38 @@ def set_account_size(token, id, size):
         except:
             return False
 
+def get_server(token):
+    r = check_auth_host(token)
+    return r.__dict__
+
 def get_projectproc(token, id):
     r = check_auth_host(token)
     if r == None:
         return r
+
+    proj = Project.objects.get(id=id)
+    # render data for apache configure
+    # every project has alone file with more process
     procs = ProjectProc.objects.filter(project__id=id, project__account__server=r, template__file_type=MODE_ENUM_APACHE)
-    data = []
+    key = proj.account.name
+
+    data = { key : {
+        "%s" % MODE_ENUM_APACHE: [],
+        "%s" % MODE_ENUM_VHM: []
+        }, 
+    }
     for it in procs:
         filetype = it.template.file_type
         content = it.get_raw()
-        data.append((MODE_ENUM_APACHE, "%s" % content, it.project.account.name, r.os_type))
+        data[key]["%s" % MODE_ENUM_APACHE].append(["%s" % content,])
 
+    # render data for uwsgi - all projects in one configure file
     procs = ProjectProc.objects.filter(project__id=id, project__account__server=r, template__file_type=MODE_ENUM_VHM)
     if len(procs) > 0:
         procs = ProjectProc.objects.filter(project__account__server=r, template__file_type=MODE_ENUM_VHM)
         for it in procs:
             content = it.get_raw()
-            data.append((MODE_ENUM_VHM, "%s" % content, it.project.account.name, r.os_type))
+            data[key]["%s" % MODE_ENUM_VHM].append(["%s" % content, ])
     return data
 
 #only for main host
@@ -249,6 +264,7 @@ dispatcher.register_function(set_account_size, 'set_account_size')
 #function get all data of account with repository
 dispatcher.register_function(get_all_repo, 'get_all_repo')
 dispatcher.register_function(get_projectproc, 'get_projectproc')
+dispatcher.register_function(get_server, 'get_server')
 dispatcher.register_function(action_for_project, 'action_for_project')
 dispatcher.register_function(set_account_uidguid, 'set_account_uidguid')
 dispatcher.register_function(set_domain_expirate, 'set_domain_expirate')
