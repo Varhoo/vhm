@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name = "vhm-client",
-    version = "0.0.5",
+    version = "0.0.6",
     author = "Pavel Studenik",
     author_email = "studenik@varhoo.cz",
     description = ("Client for manage system and project VHM."), 
