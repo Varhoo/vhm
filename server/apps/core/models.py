@@ -213,9 +213,11 @@ class ProjectProc(models.Model):
             "gid": project.get_group(),
             "port": "%d" % (8000 + self.id),
         }
-        params = [ dict([it.split("=")]) for it in self.params.split("\n") if it]
-        for it in params:
-            data.update(it)
+        for it in self.params.split("\n"):
+            if not it: continue
+            key, value = it.split("=")
+            data[key] = value.strip()
+
         c = Context(data)
         t = Template(self.template.content)
         #print t.render(c)
