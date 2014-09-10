@@ -37,7 +37,6 @@ def main():
         sys.exit(100)
 
     # pick up and run events
-
     """ Run all script for this systems. """
     srv.do_all_actions(conf)
 

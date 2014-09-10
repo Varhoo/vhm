@@ -165,33 +165,30 @@ class ServerApp:
         f.close()
 
    def get_projectproc(self, conf, proj_id):
-    data = self.rpc_srv.get_projectproc( self.token, proj_id)
+    data = self.rpc_srv.get_projectproc( self.token, proj_id )
+    server = self.rpc_srv.get_server( self.token )
+    os_type = server["os_type"]
 
-    result = {}
-    for it in data:
-      key, content, name, os_type = it
-      if result not in result.keys():
-        result[key] = []
-      result[key].append([name, content])
+    for name, procs in data.items():
+      for key, proc in procs.items():
+        # apache2 configuration
+        if key == "1":
+          content = "\n".join([item[0] for item in proc])
+          filename = "%s%03d-%s" % (ROOT_HTTPD[os_type], proj_id, name)
 
-    filename = "%s%03d-%s" % (ROOT_HTTPD[os_type], proj_id, name)
+          with open(filename, "w") as f:
+            f.write(content)
+            self.log.info("write to file %s" % filename)
+            f.close()
 
-    if result.has_key(1):
-      # render apache_file
-      content = "\n".join([ it[1] for it in result[1]])
-      with open(filename, "w") as f:
-          f.write(content)
-          self.log.info("write to file %s" % filename)
-          f.close()
-
-    filename = conf.uwsgifile
-    if result.has_key(2):
-      # render apache_file
-      content = "\n".join([it[1] for it in result[2]])
-      with open(filename, "w") as f:
-        f.write("<vhm>\n%s\n</vhm>" % content)
-        self.log.info("write to file %s" % filename)
-        f.close()
+        elif key == "2":
+          # render apache_file
+          filename = conf.uwsgifile
+          content = "\n".join([item[0] for item in proc])
+          with open(filename, "w") as f:
+            f.write("<vhm>\n%s\n</vhm>" % content)
+            self.log.info("write to file %s" % filename)
+            f.close()
     return 0
 
    def do_all_actions(self, conf):
