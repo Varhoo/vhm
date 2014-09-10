@@ -20,6 +20,8 @@ from utils import *
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+abspath = os.path.abspath
+
 POWER_ENUM = (
   (1, "Low"), 
   (2, "Medium"),
@@ -202,8 +204,8 @@ class ProjectProc(models.Model):
         data = {
             "id": self.id,
             "name": project.account.name,
-            "root": self.project.account.path,
-            "root_proc": project.get_path(),
+            "root": abspath(self.project.account.path),
+            "root_proc": abspath(project.get_path()),
             "admin_email": account.owner.email,
             "domain": project.site,
             "alias_list": alias_list,
