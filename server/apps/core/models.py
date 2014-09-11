@@ -165,35 +165,6 @@ class ProjectProc(models.Model):
     def get_account(self):
         return self.project.account
 
-    def get_data(self):
-        params = [ dict([it.split("=")]) for it in self.mode_params.split(";") if it]
-        data = { 
-                    "home": self.project.get_path(), 
-                    "id": self.id, 
-                    "uid": self.project.account.user,
-                    "gid": self.project.get_group(),
-                    "pythonpath": self.project.get_path(),
-                    "processes": 1,
-                    "optimize": 0,
-                    "limit-as": 128,
-                    "master": True,
-                    "no-orphans": True, 
-                    "pidfile": os.path.abspath("%s/%d-%s.pid" % \
-                           (self.project.account.path, self.id, \
-                            self.project.account.name)),
-                    "daemonize":  os.path.abspath("%s/log/%d-%s.log" % \
-                           (self.project.account.path, self.id, \
-                            self.project.account.name)),
-                    "chdir": self.project.get_path(),
-               }
-        for it in params:
-            data.update(it)
-        if self.mode == 2:
-            data["socket"] = "%s:%d" % ("0.0.0.0", self.id + 8000)
-            if data.has_key("wsgi-file") and not data["wsgi-file"].startswith("/"):
-                data["wsgi-file"] = "%s/%s" % (self.project.get_path(), data["wsgi-file"])
-        return data
-
     def get_template(self):
         return self.template.content
 
@@ -204,14 +175,14 @@ class ProjectProc(models.Model):
         data = {
             "id": self.id,
             "name": project.account.name,
-            "root": abspath(self.project.account.path),
+            "root": abspath(project.account.path),
             "root_proc": abspath(project.get_path()),
             "admin_email": account.owner.email,
             "domain": project.site,
             "alias_list": alias_list,
             "uid": project.account.user,
             "gid": project.get_group(),
-            "port": "%d" % (8000 + self.id),
+            "port": "%d" % (8000 + project.id),
         }
         for it in self.params.split("\n"):
             if not it: continue
@@ -220,7 +191,7 @@ class ProjectProc(models.Model):
 
         c = Context(data)
         t = Template(self.template.content)
-        #print t.render(c)
+
         return t.render(c)
 
     def get_raw_safe(self):
