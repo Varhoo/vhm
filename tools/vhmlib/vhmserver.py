@@ -182,13 +182,16 @@ class ServerApp:
             f.close()
 
         elif key == "2":
-          # render apache_file
-          filename = conf.uwsgifile
-          content = "\n".join([item[0] for item in proc])
-          with open(filename, "w") as f:
-            f.write("<vhm>\n%s\n</vhm>" % content)
-            self.log.info("write to file %s" % filename)
-            f.close()
+          rows = [item[0] for item in proc]
+          # if is empty, no write to file
+          if rows:
+            # render apache_file
+             filename = conf.uwsgifile
+             content = "\n".join(rows)
+             with open(filename, "w") as f:
+               f.write("<vhm>\n%s\n</vhm>" % content)
+               self.log.info("write to file %s" % filename)
+               f.close()
     return 0
 
    def do_all_actions(self, conf):
