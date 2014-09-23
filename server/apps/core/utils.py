@@ -11,7 +11,10 @@ def dns_save_object(_object):
     if old_expr != new_expr and new_expr != None:
         _object.expirate = new_expr
         print "%s changed  %s -> %s" % (_object, old_expr, _object.expirate)
-    _object.ip_address = socket.gethostbyname(_object.name)
+    try:
+        _object.ip_address = socket.gethostbyname(_object.name)
+    except:
+        _object.ip_address = socket.gethostbyname("www.%s" % _object.name)
     _object.save()
 
 def diff_date_days(d1,d2):
