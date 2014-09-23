@@ -111,7 +111,7 @@ class ProjectSettingAdmin(admin.ModelAdmin):
 
     
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('name', 'expirate', 'description', 'check_pay')
+    list_display = ('name', 'expirate', 'ip_address', 'description', 'check_pay')
     ordering = ['expirate',]
 
     def queryset(self, request):

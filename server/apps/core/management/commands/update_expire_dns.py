@@ -8,8 +8,8 @@
 
 from django.core.management.base import BaseCommand, CommandError
 
-from apps.apftpmy.models import *
-from apps.apftpmy.utils import *
+from apps.core.models import *
+from apps.core.utils import *
 
 from time import sleep
 from datetime import datetime
@@ -39,11 +39,5 @@ def init(*args, **kwargs):
         sleep_in_sec = 1
 
     for it in objects:
-        old_expr = it.expirate
-        new_expr = get_dns_expire(it.name)
-        it.last_modify = datetime.now()
-        if old_expr != new_expr and new_expr != None:
-            it.expirate = new_expr
-            print "%s changed  %s -> %s" % (it, old_expr, it.expirate) 
-        it.save()
+        dns_save_object(it)
         sleep(sleep_in_sec)
