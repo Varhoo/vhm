@@ -49,7 +49,7 @@ OS_ENUM = (
 
 class Domain(models.Model):
     owner = models.ForeignKey(User)
-    name = models.CharField(_("Domain name"), max_length=128, )
+    name = models.CharField(_("Domain name"), max_length=128, unique=True)
     expirate = models.DateField(_('Expirate'), blank=True, null=True, default=datetime.now)
     server = models.CharField(_("Name Server"), max_length=256, null=True, blank=True)
     ip_address = models.CharField(_("IP address"), max_length=15, null=True, blank=True)
