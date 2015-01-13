@@ -11,20 +11,23 @@ def account_delete(sender, instance, **kwargs):
 @receiver(post_save, sender=Account)
 def account_save(sender, instance, **kwargs):
     if kwargs["created"]:
-        a = ActionServer(command="user create %s %s" % (instance.user, instance.path), command_type=100, server=instance.server)
+        a = ActionServer(command="user create %s %s" % (instance.user, instance.path),\
+                         command_type=100,\
+                         server=instance.server)
         a.save()
     else:
        pass 
 
 @receiver(post_save, sender=ProjectSetting)
 def project_save(sender, instance, **kwargs):
-    if kwargs["created"]:
-        a = ActionServer(command="project update %s" % (instance.id), command_type=100, server=instance.account.server)
-        a.save()
-    else:
-       pass 
+    a = ActionServer(command="project update %s" % (instance.id),\
+                     command_type=100,\
+                     server=instance.account.server)
+    a.save()
 
 @receiver(post_save, sender=ProjectProc)
 def project_save(sender, instance, **kwargs):
-    a = ActionServer(command="project update %s" % (instance.project.id), command_type=100, server=instance.project.account.server)
+    a = ActionServer(command="project update %s" % (instance.project.id),\
+                     command_type=100,\
+                     server=instance.project.account.server)
     a.save()
