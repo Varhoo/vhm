@@ -52,7 +52,7 @@ class ProjectInline(admin.TabularInline):
     fields = ("get_admin_link", "path", "site", "is_enabled" )
     readonly_fields = ( "get_admin_link", )
     def get_admin_link(self, obj):
-        url = reverse('admin:apftpmy_projectsetting_change', args=(obj.pk,))
+        url = reverse('admin:core_projectsetting_change', args=(obj.pk,))
         return '<a href="%s">1%s</a>' % (url, obj.id)
     get_admin_link.allow_tags = True
 
@@ -81,6 +81,7 @@ class AccountAdmin(admin.ModelAdmin):
     readonly_fields = ['size', 'token', "uid", "gid" ]
     ordering= ['name',]
     inlines = [ProjectInline, FtpuserInLine, ]
+
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         obj.save()

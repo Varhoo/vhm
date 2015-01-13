@@ -134,6 +134,10 @@ class Project(models.Model):
     def __unicode__(self):
         return self.site
 
+    def save(self, *args, **kwargs):
+        self.owner = self.account.owner
+        super(Project, self).save(*args, **kwargs)
+
 
 class ProjectSetting(Project):
     repo_type = models.IntegerField(choices=REPOS_ENUM, default=0);
