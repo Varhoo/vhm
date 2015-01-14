@@ -53,7 +53,7 @@ class ProjectInline(admin.TabularInline):
     readonly_fields = ( "get_admin_link", )
     def get_admin_link(self, obj):
         url = reverse('admin:core_projectsetting_change', args=(obj.pk,))
-        return '<a href="%s">1%s</a>' % (url, obj.id)
+        return '<a href="%s">%s</a>' % (url, obj.id)
     get_admin_link.allow_tags = True
 
 
