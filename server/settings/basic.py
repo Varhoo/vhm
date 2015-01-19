@@ -147,7 +147,7 @@ INSTALLED_APPS = (
 
 AUTH_PROFILE_MODULE = 'apps.auth.models.UserProfil'
 
-APACHEIIS_GROUP = "webuser"
+APACHE_GROUP = "webuser"
 
 # nastavení administrace
 GRAPPELLI_ADMIN_HEADLINE =  'Varhoo Administrace'

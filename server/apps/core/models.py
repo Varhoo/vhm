@@ -4,7 +4,7 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-import settings, random
+import random
 import os
 from datetime import *
 from django.db import models
@@ -14,6 +14,9 @@ from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.models import User
 from django.template import Context
 from django.template import Template
+
+from django.conf import settings
+from apps.core import settings
 
 from utils import *
 
