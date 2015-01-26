@@ -34,7 +34,7 @@ class DomainCommmercial(models.Model):
 
 
 class Invoice(models.Model):
-    user = models.ForeignKey(Customer)
+    user = models.ForeignKey(Customer, verbose_name="Customer")
     account = models.ForeignKey(Account)
     date = models.DateField(default=datetime.now)
     month = models.IntegerField(help_text="Number of payed month")
@@ -45,7 +45,7 @@ class Invoice(models.Model):
     is_paid = models.BooleanField(default=False) 
 
     def date_end(self):
-        return (self.date + timedelta(self.month*365/12)).strftime("%d. %m. %Y")
+        return (self.date + timedelta(self.month*365/12))
 
     def __unicode__(self):
         return "%s %s" % (self.account, self.date.isoformat())
