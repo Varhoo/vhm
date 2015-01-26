@@ -68,7 +68,7 @@ class Domain(models.Model):
 
     class META:
         verbose_name = _('Domain')
-        verbose_name_plurar = _('Domains')
+        ordering = ('name',)
 
 
 class Server(models.Model):
@@ -100,15 +100,16 @@ class Account(models.Model):
     uid = models.IntegerField(blank=True, null=True)
     gid = models.IntegerField(blank=True, null=True)
 
+    class META:
+        verbose_name = _('Account')
+        verbose_name_plurar = _('Acounts')
+        ordering = ('name',)
+
     def sizeformat(self):
         return filesizeformat(self.size)
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.path)
-
-    class META:
-        verbose_name = _('Account')
-        verbose_name_plurar = _('Acounts')
 
     def save(self, *args, **kwargs):
         if not self.id:
