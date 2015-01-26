@@ -4,7 +4,7 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db import models
 from filebrowser.fields import FileBrowseField
 from apps.core.models import Account, Domain
