@@ -25,7 +25,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
+import logging
 import os, shlex, time, errno, sys
 from xml.etree.ElementTree import XMLParser
 from subprocess import Popen, PIPE, call
@@ -34,12 +34,13 @@ from optparse import OptionParser
 UWSGIs_PATH = "/usr/local/bin/uwsgi"
 
 class manager:
-    config_file = "/etc/uwsgi/config.xml"
     config_tree = None
     config = {}
 
-    def __init__(self):
-        f = open(self.config_file)
+    def __init__(self, conf):
+        f = open(conf.uwsgifile)
+        logging.basicConfig(level=conf.debuglevel)
+        self.log = logging
         xml_src = f.read()
         f.close()
 
@@ -196,4 +197,26 @@ class manager:
                 prefix = "not"
             print "%s %d: %s (%s)" % (prefix ,app, self.config[app]["wsgi-file"], self.config[app]["uid"])
 
-    
+    def valid(self):
+        valid_dirs = ["home", "chdir", "pythonpath"]
+        valid_files = ["pidfile", "daemonize", "wsgi-file", ]
+        def get_rights(path):
+            try:
+                f = os.stat(path)
+            except OSError:
+                return (None, None)
+            uid = f.st_uid
+            gid = f.st_gid
+            return (uid, gid)
+
+        for app in self.config:
+            uid = self.config[app]["uid"]
+            gid = self.config[app]["gid"]
+            for key in self.config[app].keys():
+                if key in valid_dirs:
+                    filepath = self.config[app][key]
+                elif key in valid_files:
+                    filepath = self.config[app][key]
+                u, g = get_rights(filepath)
+                if u != uid or g != gid:
+                    self.log.error("file %s %s:%s %s:%s" % (filepath, u, g, uid, gid))

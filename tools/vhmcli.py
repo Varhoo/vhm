@@ -1,5 +1,5 @@
 
-from vhmlib.uwsgi import manager
+from vhmlib.manager import manager
 from vhmlib.config import Config
 import sys
 

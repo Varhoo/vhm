@@ -12,6 +12,7 @@ import compiler
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".")
 
 from vhmlib.vhmserver import *
+from vhmlib.manager import manager
 from vhmlib.vhmcli import *
 from vhmlib.config import Config
 import logging
@@ -19,6 +20,7 @@ import logging
 def main():
     # config file
     conf = Config()    
+    actions = []
  
     debuglevel = logging.ERROR
     for it in sys.argv[1:]:
@@ -28,7 +30,15 @@ def main():
             debuglevel = logging.INFO
         elif it == ("-vvv"):
             debuglevel = logging.DEBUG
+        if it == ("--valid"):
+            actions.append("valid")
+
     conf.debuglevel = debuglevel
+
+    mng = manager(conf)
+    for it in actions:
+        fc = getattr(mng, it)
+        fc()
 
     srv = ServerApp(conf)
     status = srv.login(conf.token)
