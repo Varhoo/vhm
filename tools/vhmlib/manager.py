@@ -26,10 +26,12 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import logging
+import grp
 import os, shlex, time, errno, sys
 from xml.etree.ElementTree import XMLParser
 from subprocess import Popen, PIPE, call
 from optparse import OptionParser
+from pwd import getpwnam
 
 UWSGIs_PATH = "/usr/local/bin/uwsgi"
 
@@ -198,7 +200,7 @@ class manager:
             print "%s %d: %s (%s)" % (prefix ,app, self.config[app]["wsgi-file"], self.config[app]["uid"])
 
     def valid(self):
-        valid_dirs = ["home", "chdir", "pythonpath"]
+        valid_dirs = ["chdir", "pythonpath"]
         valid_files = ["pidfile", "daemonize", "wsgi-file", ]
         def get_rights(path):
             try:
@@ -210,13 +212,21 @@ class manager:
             return (uid, gid)
 
         for app in self.config:
-            uid = self.config[app]["uid"]
-            gid = self.config[app]["gid"]
+            user = self.config[app]["uid"]
+            uid = getpwnam(user).pw_uid
+            gid = getpwnam(user).pw_gid
+            guid = [g for g in grp.getgrall() if g.gr_name == self.config[app]["gid"]]
+
+            if guid and guid[0].gr_gid != gid:
+                self.log.error("%s:%s %s" % (uid, gid, guid[0].gr_gid))
+
             for key in self.config[app].keys():
                 if key in valid_dirs:
                     filepath = self.config[app][key]
                 elif key in valid_files:
                     filepath = self.config[app][key]
+                else:
+                    continue
                 u, g = get_rights(filepath)
                 if u != uid or g != gid:
-                    self.log.error("file %s %s:%s %s:%s" % (filepath, u, g, uid, gid))
+                    self.log.error("%s: file %s %s:%s %s:%s" % (key, filepath, u, g, uid, gid))
