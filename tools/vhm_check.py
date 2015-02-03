@@ -35,11 +35,6 @@ def main():
 
     conf.debuglevel = debuglevel
 
-    mng = manager(conf)
-    for it in actions:
-        fc = getattr(mng, it)
-        fc()
-
     srv = ServerApp(conf)
     status = srv.login(conf.token)
 
@@ -49,6 +44,9 @@ def main():
     # pick up and run events
     """ Run all script for this systems. """
     srv.do_all_actions(conf)
+
+
+    srv.check_services()
 
     """ send data for monitoring """
     if conf.monitoring:
@@ -64,6 +62,13 @@ def main():
 
         """ Recount size of full disk in all project on this system. """
         srv.check_size_all()
+
+        srv.check_services()
+
+        mng = manager(conf)
+        for it in actions:
+            fc = getattr(mng, it)
+            fc()
 
 if __name__ == "__main__":
     main()

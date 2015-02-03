@@ -94,7 +94,7 @@ class Account(models.Model):
     server = models.ForeignKey(Server)
     name = models.SlugField(_("Name"), max_length=64,unique=True)
     path = models.CharField(max_length=64, help_text="Určuje cestu k webove prezentaci %s" % settings.APACHE_DIR_LOCATION, default=settings.APACHE_DIR_LOCATION)
-    size = models.IntegerField(_('Size'), default=0)
+    size = models.BigIntegerField(_('Size'), default=0)
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
     user = models.SlugField()
     uid = models.IntegerField(blank=True, null=True)
@@ -106,7 +106,7 @@ class Account(models.Model):
         ordering = ('name',)
 
     def sizeformat(self):
-        return filesizeformat(self.size)
+        return filesizeformat(self.size*10**3)
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.path)

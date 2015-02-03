@@ -15,6 +15,7 @@ import errno
 from user import User
 from socket import error as socket_error
 from repository import *
+from manager import manager
 
 ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath', 
         'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans', 
@@ -54,7 +55,7 @@ def aray2xml(data):
 
 
 class ServerApp:
-   def __init__(self, conf):
+  def __init__(self, conf):
       protocol = "http" if not conf.ssl else "https"
       self.url = "%s://%s/xmlrpc/" % (protocol, conf.server) 
       self.rpc_srv = xmlrpclib.ServerProxy(self.url, verbose=conf.verbose)
@@ -63,7 +64,7 @@ class ServerApp:
       logging.basicConfig(level=conf.debuglevel)
       self.log = logging
 
-   def login(self, token):
+  def login(self, token):
       self.token = token
       try:
           ping = self.rpc_srv.ping(self.token)
@@ -79,16 +80,20 @@ class ServerApp:
 
       return True
 
-   def check_size_all(self):
+  def check_size_all(self):
       """
       Get size of homedir and update data on the server
       """
       result = self.rpc_srv.get_all_account( self.token  )
       for it in result:
          size = getFolderSize(it["path"])         
-         result = self.rpc_srv.set_account_size( self.token, it["id"], str(size) )
+         result = self.rpc_srv.set_account_size( self.token, it["id"], str(size/10**3) )
 
-   def check_userid_all(self):
+  def check_services(self):
+      mng = manager(self.conf)
+      mng.list()
+
+  def check_userid_all(self):
       result = self.rpc_srv.get_all_account( self.token  )
       #for it in result:
       for it in result:
@@ -99,11 +104,11 @@ class ServerApp:
          self.log.debug("uid=%s gid=%s" % ( u.uid, u.gid ))
          self.rpc_srv.set_account_uidguid(self.token, u.username, u.uid, u.gid)
 
-   def get_all_account(self):
+  def get_all_account(self):
        result = self.rpc_srv.get_all_repo( self.token  )
        return result
 
-   def check_repo(self):
+  def check_repo(self):
        result = self.rpc_srv.get_all_repo( self.token  )
 
        for it in result:
@@ -119,7 +124,7 @@ class ServerApp:
              elif repo_id == 2: #GIT
                  res = update_repo_git(it)
 
-   def apache_restart(self):
+  def apache_restart(self):
         # restart apache service
       command = "service apache2 reload" 
       self.log.info("command: %s" % command)
@@ -127,7 +132,7 @@ class ServerApp:
       if result[0] > 0:
           print result[1]
 
-   def apache_reload(self):
+  def apache_reload(self):
         # restart apache service
       command = "service apache2 reload" 
       self.log.info("command: %s" % command)
@@ -135,7 +140,7 @@ class ServerApp:
       if result[0] > 0:
           print result[1]
 
-   def monitoring(self):
+  def monitoring(self):
         if hasattr(psutil, "virtual_memory"):
             # rename from version 0.5.0
             mem = psutil.virtual_memory()
@@ -150,11 +155,11 @@ class ServerApp:
         }
         self.rpc_srv.set_monitoring_data(self.token, data)
 
-   def get_all_projects(self):
+  def get_all_projects(self):
       result = self.rpc_srv.get_all_projects( self.token  )
       return result
 
-   def write_uwsgi(self, conf):
+  def write_uwsgi(self, conf):
       data = self.rpc_srv.get_all_projects(self.token)
       for it in data:
           if hasattr(conf, "group"):
@@ -164,7 +169,7 @@ class ServerApp:
         f.write(content)
         f.close()
 
-   def get_projectproc(self, conf, proj_id):
+  def get_projectproc(self, conf, proj_id):
     data = self.rpc_srv.get_projectproc( self.token, proj_id )
     server = self.rpc_srv.get_server( self.token )
     os_type = server["os_type"]
@@ -194,7 +199,7 @@ class ServerApp:
                f.close()
     return 0
 
-   def do_all_actions(self, conf):
+  def do_all_actions(self, conf):
       data = self.rpc_srv.action_server_list( self.token )
       result = None
       #FIXME
@@ -231,7 +236,7 @@ class ServerApp:
          else:
             result = self.rpc_srv.action_server_status( self.token, it["id"], 3, result, status )
 
-   def __action_update(self, args, srv):
+  def __action_update(self, args, srv):
       def deb(args):
          print "UPDATE debian:"
          command = "apt-get update; apt-get upgrade -y"
@@ -252,7 +257,7 @@ class ServerApp:
       print "result:", res[1]
       return res[0]
 
-   def send_file(self, filepath):
+  def send_file(self, filepath):
       r = requests.post(self.url, files={filepath: open(filepath, 'rb')})
       # need use better  way to upload file
       #self.rpc_srv.send_file( self.token, data)
@@ -261,11 +266,11 @@ class ServerApp:
 
 class MainServerApp:
 
-   def __init__(self,host):
+  def __init__(self,host):
       self.rpc_srv = xmlrpclib.ServerProxy("http://%s/xmlrpc/" % host)
       self.token = ''
 
-   def check_demain_name(self,domain):
+  def check_demain_name(self,domain):
       expr = utils.get_dns_expire(domain)
       result = self.rpc_srv.set_domain_expirate( self.token, domain, str(expr) )
       
