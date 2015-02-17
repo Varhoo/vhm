@@ -7,6 +7,7 @@
 
 import sys, os, re
 import xmlrpclib, commands
+import subprocess
 import utils
 import logging
 import psutil
@@ -79,6 +80,11 @@ class ServerApp:
           print self.conf.server, ping
 
       return True
+
+  def check_rights(self):
+      result = self.rpc_srv.get_all_account( self.token  )
+      for it in result:
+         subprocess.call(['chown', '%s:%s' % (it["user"], self.conf.group), '-R', it["path"]])
 
   def check_size_all(self):
       """

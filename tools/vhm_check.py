@@ -63,6 +63,9 @@ def main():
         """ Recount size of full disk in all project on this system. """
         srv.check_size_all()
 
+        """ reset owners for projects """
+        srv.check_rights()
+
         srv.check_services()
 
         mng = manager(conf)
