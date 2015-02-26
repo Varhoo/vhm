@@ -3,6 +3,9 @@
 import commands,re
 from datetime import datetime
 import socket
+import logging
+
+logger = logging.getLogger(__name__)
 
 def dns_save_object(_object):
     old_expr = _object.expirate
@@ -10,7 +13,7 @@ def dns_save_object(_object):
     _object.last_modify = datetime.now()
     if old_expr != new_expr and new_expr != None:
         _object.expirate = new_expr
-        print "%s changed  %s -> %s" % (_object, old_expr, _object.expirate)
+        logger.info("%s changed  %s -> %s" % (_object, old_expr, _object.expirate))
     try:
         _object.ip_address = socket.gethostbyname(_object.name)
     except:
@@ -27,12 +30,12 @@ def get_dns_expire(domain):
     string_exp = r"([.0-9]+)"
     # org have other date format
     if domain.endswith(".org") or domain.endswith(".info"):
-        command = "whois %s | grep ^Expiration" % domain
+        command = "whois %s | grep Expiry" % domain
         date_exp = "%d-%b-%Y"
         string_exp = r"Date:([^ ]*) " 
 
     if domain.endswith(".com"):
-        command = "whois %s | grep ^expires:" % domain
+        command = "whois %s | grep 'Registration Expiration'" % domain
         date_exp = "%Y-%m-%d"
         string_exp = r" ([0-9-]+) " 
 
@@ -40,8 +43,8 @@ def get_dns_expire(domain):
     if data[0] == 0:
         m = re.search(string_exp, data[1])
         if m:
-            return datetime.date(datetime.strptime(m.group(1),date_exp))
-    print command, data
+            return datetime.date(datetime.strptime(m.group(1), date_exp))
+    logger.warning("%s: %s" % (command, data))
     return None
 
 #test
