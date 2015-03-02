@@ -213,6 +213,17 @@ def set_account_uidguid(token, user, uid, gid):
         except Account.DoesNotExist:
             return False
 
+def set_procs_running(token, data):
+    r = check_auth_host(token)
+    if r == None:
+        return r
+
+    for key, value in data.items():
+        proc = ProjectProc.objects.get(id=int(key), project__account__server=r)
+        proc.is_running = value
+        proc.save()
+
+
 # only for user
 def action_for_project(token,action):
          acc = Account.objects.get(token=token)
@@ -268,6 +279,7 @@ dispatcher.register_function(get_server, 'get_server')
 dispatcher.register_function(action_for_project, 'action_for_project')
 dispatcher.register_function(set_account_uidguid, 'set_account_uidguid')
 dispatcher.register_function(set_domain_expirate, 'set_domain_expirate')
+dispatcher.register_function(set_procs_running, 'set_procs_running')
 dispatcher.register_function(action_server_list, 'action_server_list')
 dispatcher.register_function(action_server_status, 'action_server_status')
 dispatcher.register_function(ping, 'ping')

@@ -168,6 +168,9 @@ class ProjectProc(models.Model):
     params = models.TextField(max_length=256, null=True, blank=True)
     is_running = models.BooleanField(_('Is running'), default=False)
 
+    def __unicode__(self):
+        return "%s: %s" % (self.project, self.template)
+
     def is_enabled(self):
         return self.project.is_enabled
     is_enabled.boolean = True
@@ -207,6 +210,7 @@ class ProjectProc(models.Model):
     def get_raw_safe(self):
         s = self.get_raw()
         return mark_safe(escape(s).encode('ascii', 'xmlcharrefreplace'))
+
 
 class DomainAlias(models.Model):	
     site = models.CharField(max_length=126)

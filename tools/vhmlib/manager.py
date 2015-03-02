@@ -199,6 +199,16 @@ class manager:
                 prefix = "not"
             print "%s %d: %s (%s)" % (prefix ,app, self.config[app]["wsgi-file"], self.config[app]["uid"])
 
+    def get_list(self):
+        data = {}
+        for app in self.config:
+            if os.getuid() != 0 and os.getlogin() != self.config[app]["uid"]: continue
+            prefix = True
+            if not self.running_check(app):
+                prefix = False
+            data["%s" % app] = prefix
+        return data
+
     def valid(self):
         valid_dirs = ["chdir", "pythonpath"]
         valid_files = ["pidfile", "daemonize", "wsgi-file", ]
