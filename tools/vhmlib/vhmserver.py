@@ -143,21 +143,21 @@ class ServerApp:
                 elif repo_id == 2:  # GIT
                     res = update_repo_git(it)
 
+    def execute(self, command):
+        self.log.info("command: %s" % command)
+        result = commands.getstatusoutput(command)
+        return result
+
     def apache_restart(self):
         # restart apache service
         command = "service apache2 reload"
-        self.log.info("command: %s" % command)
-        result = commands.getstatusoutput(command)
-        if result[0] > 0:
-            print result[1]
+        return self.execute(command)
 
     def apache_reload(self):
         # restart apache service
         command = "service apache2 reload"
         self.log.info("command: %s" % command)
-        result = commands.getstatusoutput(command)
-        if result[0] > 0:
-            print result[1]
+        return self.execute(command)
 
     def monitoring(self):
         if hasattr(psutil, "virtual_memory"):
@@ -259,12 +259,16 @@ class ServerApp:
                     status = 0
                     result = "%s %s %s" % (u.username, u.uid, u.gid)
 
-            else:
+            elif int(it["command_type"]) == 0:
                 if os.geteuid() == 0:
                     cmd = "su %s -c '%s'" % (it["role"], it["command"])
                 else:
                     cmd = "%s" % (it["command"])
-                status, result = commands.getstatusoutput(cmd)
+                status, result = self.execute(cmd)
+                print status, result 
+            else:
+                status = 127
+                result = "unsupport operation"
 
             if status == 0:
                 result = self.rpc_srv.action_server_status(

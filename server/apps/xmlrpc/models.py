@@ -225,9 +225,9 @@ def set_procs_running(token, data):
 
 
 # only for user
-def action_for_project(token,action):
+def action_for_project(token, action):
          acc = Account.objects.get(token=token)
-         if len(Action.objects.filter(account=acc,command=action, status=0)) > 0:
+         if len(Action.objects.filter(account=acc, command=action, status=0)) > 0:
             return "INFO: waiting, this action in sheduler"
 
          act = Action(account=acc,command=action)
