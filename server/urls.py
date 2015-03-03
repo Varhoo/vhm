@@ -3,6 +3,7 @@
 from django.conf.urls import patterns, url, include
 from filebrowser.sites import site
 from django.conf import settings
+from django.views.generic import RedirectView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -21,7 +22,7 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     (r'^doc/', include('django.contrib.admindocs.urls')),
     #(r'^openid/', include('apps.consumer.urls')),
-    (r'^$','apps.auth.views.index'),
+    (r'^$', RedirectView.as_view(url='/admin/')),
     (r'^ticket/', include('apps.ticket.urls')),
     #(r'^admin/login/','apps.auth.views.index'),
     (r'^admin/grappelli/', include('grappelli.urls')),
