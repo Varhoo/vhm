@@ -20,14 +20,16 @@ def account_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=ProjectSetting)
 def project_save(sender, instance, **kwargs):
-    a = ActionServer(command="project::update::%s" % (int(instance.id)),\
+    if kwargs["created"]:
+        a = ActionServer(command="project::update::%s" % (int(instance.id)),\
                      command_type=100,\
                      server=instance.account.server)
-    a.save()
+        a.save()
 
 @receiver(post_save, sender=ProjectProc)
 def project_save(sender, instance, **kwargs):
-    a = ActionServer(command="proc::update::%s" % (int(instance.project.id)),\
+    if kwargs["created"]:
+        a = ActionServer(command="proc::update::%s" % (int(instance.project.id)),\
                      command_type=100,\
                      server=instance.project.account.server)
-    a.save()
+        a.save()
