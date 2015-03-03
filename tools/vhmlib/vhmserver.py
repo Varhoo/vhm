@@ -265,7 +265,7 @@ class ServerApp:
                 else:
                     cmd = "%s" % (it["command"])
                 status, result = self.execute(cmd)
-                print status, result 
+                self.log.debug("[%s] %s" % (status, result))
             else:
                 status = 127
                 result = "unsupport operation"
@@ -286,7 +286,7 @@ class ServerApp:
 
         def rpm(args):
             print "UPDATE fedora:"
-            command = "yum update"
+            command = "yum update -y"
             data = commands.getstatusoutput(command)
             return data
         res = {

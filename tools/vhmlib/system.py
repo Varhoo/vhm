@@ -3,6 +3,7 @@ import os
 import sys
 import platform
 
+
 def get_installed_packes():
     dist, dist_version, dist_name = platform.dist()
 
@@ -11,7 +12,7 @@ def get_installed_packes():
         yb = yum.YumBase()
         pkgs = yb.rpmdb.returnPackages()
         #pl = yb.pkgSack.returnNewestByNameArch(patterns=sys.argv[1:])
-        #print dir(pl)
+        # print dir(pl)
         data = []
         for it in pkgs:
             data.append(
@@ -23,14 +24,13 @@ def get_installed_packes():
         import apt
         c = apt.Cache()
         data = []
-        for it in c: 
-           if it.is_installed:
-               for itt in it.versions:
-                   data.append(
-                        { "name": it.name,
-                        })
+        for it in c:
+            if it.is_installed:
+                for itt in it.versions:
+                    data.append(
+                        {"name": it.name,
+                         })
         return data
-        
+
 
 print get_installed_packes()
-    

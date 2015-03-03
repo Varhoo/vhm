@@ -6,19 +6,21 @@ from setuptools import setup
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
+
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "vhm-client",
-    version = "0.3.1",
-    author = "Pavel Studenik",
-    author_email = "studenik@varhoo.cz",
-    description = ("Client for manage system and project VHM."), 
+    name="vhm-client",
+    version="0.3.1",
+    author="Pavel Studenik",
+    author_email="studenik@varhoo.cz",
+    description=("Client for manage system and project VHM."),
     license = "GPL",
     keywords = "Client for varhoo manage system",
     url = "https://github.com/Pajinek/vhm",
-    packages=['vhmlib',],
+    packages=['vhmlib', ],
     scripts=["vhm_check.py", "vhmcli.py"],
     long_description=read('README'),
     classifiers=[
@@ -27,7 +29,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Programming Language :: Python :: 2.7",
     ],
-    install_requires=["psutil",],
+    install_requires=["psutil", ],
     extras_require={
         "psutil": "python-psutil",
     }

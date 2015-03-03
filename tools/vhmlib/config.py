@@ -1,7 +1,9 @@
 import ConfigParser
 import os
 
+
 class Config:
+
     def __init__(self):
         path = "/etc/vhm.conf"
 
@@ -19,11 +21,20 @@ class Config:
         self.token = self.get("client", "token")
         self.server = self.get("client", "server")
         self.verbose = self.getint("client", "verbose")
-        self.monitoring = self.getboolean("client", "monitoring", default=False)
-        self.webproject = self.getboolean("client", "webproject", default=False)
+        self.monitoring = self.getboolean(
+            "client",
+            "monitoring",
+            default=False)
+        self.webproject = self.getboolean(
+            "client",
+            "webproject",
+            default=False)
         self.ssl = self.getboolean("client", "ssl_enable", default=False)
         self.group = self.get("webproject", "group")
-        self.uwsgifile = self.get("webproject", "file", "/etc/uwsgi/config.xml")
+        self.uwsgifile = self.get(
+            "webproject",
+            "file",
+            "/etc/uwsgi/config.xml")
         self.smtp = self.get("smtp", "host", default=False)
 
     def create(self, path):
@@ -56,4 +67,3 @@ class Config:
             return self.conf.get(sec, name)
         else:
             return default
-        

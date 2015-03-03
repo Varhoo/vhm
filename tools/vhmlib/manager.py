@@ -9,7 +9,7 @@
 #
 #     1. Redistributions of source code must retain the above copyright notice,
 #        this list of conditions and the following disclaimer.
-#   
+#
 #     2. Redistributions in binary form must reproduce the above copyright
 #        notice, this list of conditions and the following disclaimer in the
 #        documentation and/or other materials provided with the distribution.
@@ -27,13 +27,18 @@
 
 import logging
 import grp
-import os, shlex, time, errno, sys
+import os
+import shlex
+import time
+import errno
+import sys
 from xml.etree.ElementTree import XMLParser
 from subprocess import Popen, PIPE, call
 from optparse import OptionParser
 from pwd import getpwnam
 
 UWSGIs_PATH = "/usr/local/bin/uwsgi"
+
 
 class manager:
     config_tree = None
@@ -59,9 +64,9 @@ class manager:
             for subelement in element:
                 self.config[web_id][subelement.tag] = subelement.text
 
-    ############################
-    ## Process manipulation
-    ############################
+    #
+    # Process manipulation
+    #
 
     def run_cmd(self, cmd):
         return_code = call(shlex.split(cmd))
@@ -78,7 +83,7 @@ class manager:
         try:
             os.kill(self.get_pid(id), signal)
             return True
-        except OSError, err:
+        except OSError as err:
             if err.errno == errno.ESRCH:
                 return False
             elif err.errno == errno.EPERM:
@@ -91,7 +96,6 @@ class manager:
                 sys.exit(1)
         else:
             return True
-
 
     def running_check(self, id):
         return self.send_signal(id, 0)
@@ -113,23 +117,27 @@ class manager:
 
     #{'43': {'wsgi-file': '/home/cx/co/sexflirt/sexflirt.wsgi', 'processes': '1', 'uid': 'cx', 'pythonpath': '/home/cx/co/', 'limit-as': '48', 'chmod-socket': '660', 'gid': 'cx', 'master': None, 'home': '/home/cx/virtualenvs/default', 'optimize': '1', 'socket': '/home/cx/uwsgi/sexflirt.cz.sock'}}
 
-    ## Actions it selfs
+    # Actions it selfs
 
     def start(self, id):
         self.check_id(id)
 
-        python_bin = self.config[id]["home"]+"/bin/python -V"
+        python_bin = self.config[id]["home"] + "/bin/python -V"
         p = Popen(shlex.split(python_bin), stdout=PIPE, stderr=PIPE)
         data_raw = p.communicate()
         version = ".".join(data_raw[1].split(" ")[1].split(".")[0:2])
 
-        uwsgi_bin = "%s%s" % (UWSGIs_PATH, version.replace(".",""))
+        uwsgi_bin = "%s%s" % (UWSGIs_PATH, version.replace(".", ""))
         if not os.path.isfile(uwsgi_bin):
             uwsgi_bin = "/usr/bin/uwsgi"
 
         if not self.running_check(id):
             if os.getuid() == 0:
-                cmd = "su %s -c '%s -x %s:%d'" % (self.config[id]["uid"], uwsgi_bin, self.config_file, id)
+                cmd = "su %s -c '%s -x %s:%d'" % (
+                    self.config[id]["uid"],
+                    uwsgi_bin,
+                    self.config_file,
+                    id)
             else:
                 cmd = "%s -x %s:%d" % (uwsgi_bin, self.config_file, id)
             self.run_cmd(cmd)
@@ -141,11 +149,11 @@ class manager:
     def stop(self, id):
         self.check_id(id)
         if self.running_check(id):
-            if not self.send_signal(id, 3): #QUIT signal
+            if not self.send_signal(id, 3):  # QUIT signal
                 print "Error QUIT"
             time.sleep(1)
             if self.running_check(id):
-                if not self.send_signal(id, 9): #KILL signal
+                if not self.send_signal(id, 9):  # KILL signal
                     print "Error KILL"
             time.sleep(1)
         else:
@@ -154,7 +162,7 @@ class manager:
     def stopall(self):
         for web in self.config:
             self.stop(web)
-        
+
     def restart(self, id):
         self.check_id(id)
         if self.running_check(id):
@@ -193,16 +201,18 @@ class manager:
 
     def list(self):
         for app in self.config:
-            if os.getuid() != 0 and os.getlogin() != self.config[app]["uid"]: continue
+            if os.getuid() != 0 and os.getlogin() != self.config[app]["uid"]:
+                continue
             prefix = "run"
             if not self.running_check(app):
                 prefix = "not"
-            print "%s %d: %s (%s)" % (prefix ,app, self.config[app]["wsgi-file"], self.config[app]["uid"])
+            print "%s %d: %s (%s)" % (prefix, app, self.config[app]["wsgi-file"], self.config[app]["uid"])
 
     def get_list(self):
         data = {}
         for app in self.config:
-            if os.getuid() != 0 and os.getlogin() != self.config[app]["uid"]: continue
+            if os.getuid() != 0 and os.getlogin() != self.config[app]["uid"]:
+                continue
             prefix = True
             if not self.running_check(app):
                 prefix = False
@@ -212,6 +222,7 @@ class manager:
     def valid(self):
         valid_dirs = ["chdir", "pythonpath"]
         valid_files = ["pidfile", "daemonize", "wsgi-file", ]
+
         def get_rights(path):
             try:
                 f = os.stat(path)
@@ -225,7 +236,8 @@ class manager:
             user = self.config[app]["uid"]
             uid = getpwnam(user).pw_uid
             gid = getpwnam(user).pw_gid
-            guid = [g for g in grp.getgrall() if g.gr_name == self.config[app]["gid"]]
+            guid = [
+                g for g in grp.getgrall() if g.gr_name == self.config[app]["gid"]]
 
             if guid and guid[0].gr_gid != gid:
                 self.log.error("%s:%s %s" % (uid, gid, guid[0].gr_gid))
@@ -239,4 +251,6 @@ class manager:
                     continue
                 u, g = get_rights(filepath)
                 if u != uid or g != gid:
-                    self.log.error("%s: file %s %s:%s %s:%s" % (key, filepath, u, g, uid, gid))
+                    self.log.error(
+                        "%s: file %s %s:%s %s:%s" %
+                        (key, filepath, u, g, uid, gid))

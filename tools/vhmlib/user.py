@@ -3,7 +3,9 @@ import pwd
 import sys
 import os
 
+
 class User:
+
     def __init__(self, username):
         self.username = username
         self.check()
@@ -23,7 +25,8 @@ class User:
         return self.is_exist
 
     def create(self, group, homedir):
-        if self.exist(): return
+        if self.exist():
+            return
 
         if not os.path.exists(homedir):
             os.makedirs(homedir)
@@ -32,7 +35,7 @@ class User:
         data = commands.getstatusoutput(command)
         if data[0] != 0:
             msg = "USER Error: Can't create user.\n"
-            sys.stderr.write(msg) 
+            sys.stderr.write(msg)
             return False
 
         command = "chown %s:%s -R %s" % (self.username, group, homedir)
@@ -45,7 +48,7 @@ class User:
             data = commands.getstatusoutput(command)
             if data[0] != 0:
                 msg = "USER Error: Can't create user.\n"
-                sys.stderr.write(msg) 
+                sys.stderr.write(msg)
                 return False
         self.check()
         return True
@@ -53,7 +56,7 @@ class User:
     def rename(self, newname):
         pass
 
-if __name__=="__main__":
+if __name__ == "__main__":
     u = User("pavel")
     print u.__dict__
 
