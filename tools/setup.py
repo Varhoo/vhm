@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name="vhm-client",
-    version="0.3.1",
+    version="0.3.2",
     author="Pavel Studenik",
     author_email="studenik@varhoo.cz",
     description=("Client for manage system and project VHM."),

@@ -12,6 +12,7 @@ from email.mime.text import MIMEText
 
 
 def get_admins_from_django(homedir):
+    return ["root@localhost"]
     """ Get admin's emails from django settings """
     path = homedir + "/settings/basic.py"
     if not os.path.exists(path):
@@ -104,7 +105,7 @@ def update_repo_svn(data):
 
         # send mail by python (no django)
         if emails:
-            send_mail(subject, msg, SMTP_USERNAME, emails)
+            send_mail(subject, msg, "root@localhost", emails)
 
         # if exists some python files that apache service restart
         if len([it for it in result[1].split("\n") if it.endswith(".py")]) > 0:

@@ -46,6 +46,8 @@ class Config:
         config.set("client", "server", "")
         config.set("client", "verbose", "0")
         config.set("client", "ssl_enable", "False")
+        config.set("client", "monitoring", "False")
+        config.set("client", "webproject", "False")
         config.set("webproject", "group", "webuser")
         config.set("webproject", "file", "/etc/uwsgi/config.xml")
         config.write(open(path, 'w'))
