@@ -76,7 +76,7 @@ class Server(models.Model):
     description = models.TextField(_("Description"))
     total_mem = models.IntegerField(_("Total Memory"), default=0)
     total_hd = models.IntegerField(_("Total Disk"), default=0)
-    last_checked = models.DateTimeField(_("last checkdd"), null=True, blank=True)
+    last_checked = models.DateTimeField(_("last checked"), null=True, blank=True)
     global_ip = models.IPAddressField(default="0.0.0.0")
     os_type = models.IntegerField(choices=OS_ENUM);
     token = models.CharField(max_length=50,default="".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))

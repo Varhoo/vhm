@@ -127,7 +127,11 @@ class TemplateProcAdmin(admin.ModelAdmin):
     list_display = ('title', 'file_type', )
 
 
-admin.site.register(Server)
+class ServerAdmin(admin.ModelAdmin):
+    list_display = ('hostname', "last_checked", "os_type", "global_ip" )
+
+
+admin.site.register(Server, ServerAdmin)
 admin.site.register(DomainAlias)
 admin.site.register(TemplateProc, TemplateProcAdmin)
 admin.site.register(ProjectProc, ProjectProcAdmin)
