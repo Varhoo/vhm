@@ -40,6 +40,9 @@ class Task(models.Model):
         if self.common == "product.regenerate" :
             from apps.product.utils import Regenerate
             objInit = Regenerate
+        if self.common == "svn.update" :
+            from apps.svn_dav.utils import Regenerate
+            objInit = Regenerate
 
         try:
             obj = objInit(debug=0)

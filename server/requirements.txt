@@ -1,5 +1,0 @@
-Django<1.6
-South
-django-filebrowser<3.6
-django-grappelli<2.5
-#MySQL-python

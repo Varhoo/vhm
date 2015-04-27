@@ -10,9 +10,7 @@ class RightsInline(admin.TabularInline):
 
 
 class SvnRepositoryAdmin(admin.ModelAdmin):
-    list_display = ('name','users')
+    list_display = ('name', 'users')
     inlines = [RightsInline, ]
 
-admin.site.register(SvnRepository,SvnRepositoryAdmin)
-
-
+admin.site.register(SvnRepository, SvnRepositoryAdmin)

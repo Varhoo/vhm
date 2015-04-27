@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding: utf-8 
+# coding: utf-8
 # Author: Pavel Studeník
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
@@ -49,8 +49,9 @@ class ProcInline(admin.TabularInline):
 class ProjectInline(admin.TabularInline):
     model = ProjectSetting
     extra = 0
-    fields = ("get_admin_link", "path", "site", "is_enabled" )
-    readonly_fields = ( "get_admin_link", )
+    fields = ("get_admin_link", "path", "site", "is_enabled")
+    readonly_fields = ("get_admin_link", )
+
     def get_admin_link(self, obj):
         url = reverse('admin:core_projectsetting_change', args=(obj.pk,))
         return '<a href="%s">%s</a>' % (url, obj.id)
@@ -65,21 +66,21 @@ class FtpuserInLine(admin.TabularInline):
 class FtpuserAdmin(admin.ModelAdmin):
     list_display = ('account', 'homedir')
 
-    
+
 class AccountAdmin(admin.ModelAdmin):
     list_display = ('name', 'path', 'sizeformat')
     fieldsets = (
         (None, {
             'fields':
-                ( 'owner', 'server', 'name', 'size' )
+                ('owner', 'server', 'name', 'size')
         }),
         ('Advanced options', {
             'classes': ('collapse',),
             'fields': ('user', "path", ('uid', 'gid'), 'token',)
         }),
     )
-    readonly_fields = ['size', 'token', "uid", "gid" ]
-    ordering= ['name',]
+    readonly_fields = ['size', 'token', "uid", "gid"]
+    ordering = ['name', ]
     inlines = [ProjectInline, FtpuserInLine, ]
 
     def save_model(self, request, obj, form, change):
@@ -88,32 +89,39 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 class ProjectProcAdmin(admin.ModelAdmin):
-    list_display = ('project', "get_account", "template", 'is_enabled', 'is_running')
+    list_display = ('project', "get_account",
+                    "template", 'is_enabled', 'is_running')
     fieldsets = (
         (None, {
             'fields':
-                ('project', ('template', "is_running"), "params", ("get_raw_safe", "get_template"))
-            }),
-        )
+                ('project', ('template', "is_running"),
+                 "params", ("get_raw_safe", "get_template"))
+        }),
+    )
     readonly_fields = ("is_running", "get_raw_safe", "get_template")
 
+
 class ProjectSettingAdmin(admin.ModelAdmin):
-    list_display = ('account', 'site', 'repo_type', 'last_update', 'is_enabled')
-    #fieldsets = (
+    list_display = (
+        'account', 'site', 'repo_type', 'last_update', 'is_enabled')
+    # fieldsets = (
     #    (None, {
     #        'fields': ('account', 'site', ('django_wsgi','is_valid','power'), ('repo_type','repo_version'), 'repo_url', 'note', 'comment')
     #    }),)
-    inlines = [AliasInline, ProcInline ]
+    inlines = [AliasInline, ProcInline]
+
     def queryset(self, request):
         return ProjectSetting.objects.filter(account__owner=request.user)
+
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         obj.save()
 
-    
+
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('name', 'expirate', 'ip_address', 'description', 'check_pay')
-    ordering = ['expirate',]
+    list_display = ('name', 'expirate',
+                    'ip_address', 'description', 'check_pay')
+    ordering = ['expirate', ]
 
     def queryset(self, request):
         return Domain.objects.filter(owner=request.user)
@@ -128,7 +136,7 @@ class TemplateProcAdmin(admin.ModelAdmin):
 
 
 class ServerAdmin(admin.ModelAdmin):
-    list_display = ('hostname', "last_checked", "os_type", "global_ip" )
+    list_display = ('hostname', "last_checked", "os_type", "global_ip")
 
 
 admin.site.register(Server, ServerAdmin)

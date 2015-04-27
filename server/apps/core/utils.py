@@ -1,11 +1,13 @@
 #!/bin/python
 
-import commands,re
+import commands
+import re
 from datetime import datetime
 import socket
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def dns_save_object(_object):
     old_expr = _object.expirate
@@ -13,18 +15,21 @@ def dns_save_object(_object):
     _object.last_modify = datetime.now()
     if old_expr != new_expr and new_expr != None:
         _object.expirate = new_expr
-        logger.info("%s changed  %s -> %s" % (_object, old_expr, _object.expirate))
+        logger.info("%s changed  %s -> %s" %
+                    (_object, old_expr, _object.expirate))
     try:
         _object.ip_address = socket.gethostbyname(_object.name)
     except:
         _object.ip_address = socket.gethostbyname("www.%s" % _object.name)
     _object.save()
 
-def diff_date_days(d1,d2):
-    return (int(d1.strftime("%s")) - int(d2.strftime("%s")))/(3600*24)
+
+def diff_date_days(d1, d2):
+    return (int(d1.strftime("%s")) - int(d2.strftime("%s"))) / (3600 * 24)
+
 
 def get_dns_expire(domain):
-    
+
     command = "whois %s | grep expire" % domain
     date_exp = "%d.%m.%Y"
     string_exp = r"([.0-9]+)"
@@ -32,12 +37,12 @@ def get_dns_expire(domain):
     if domain.endswith(".org") or domain.endswith(".info"):
         command = "whois %s | grep Expiry" % domain
         date_exp = "%d-%b-%Y"
-        string_exp = r"Date:([^ ]*) " 
+        string_exp = r"Date:([^ ]*) "
 
     if domain.endswith(".com"):
         command = "whois %s | grep 'Registration Expiration'" % domain
         date_exp = "%Y-%m-%d"
-        string_exp = r" ([0-9-]+) " 
+        string_exp = r" ([0-9-]+) "
 
     data = commands.getstatusoutput(command)
     if data[0] == 0:
@@ -47,12 +52,9 @@ def get_dns_expire(domain):
     logger.warning("%s: %s" % (command, data))
     return None
 
-#test
-if __name__=="__main__":
+# test
+if __name__ == "__main__":
     print get_dns_expire("varhoo.cz")
     print get_dns_expire("wallplus.org")
     print get_dns_expire("mariepetrakova.com")
     print get_dns_expire("styrax.info")
-    
-
-
