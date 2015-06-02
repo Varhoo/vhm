@@ -38,7 +38,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     readonly_fields = ['price', ]
 
     def queryset(self, request):
-        return Invoice.objects.filter(account__owner=request.user)
+        return Invoice.objects.filter(account__owner=request.user).order_by("-date")
 
 
 admin.site.register(Customer, CustomerAdmin)
