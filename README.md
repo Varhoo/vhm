@@ -9,27 +9,39 @@ It's client/server application for manage django, php projects on remote servers
 * Automation for update project
 * Monitoring remote systems
 
-Installation
+How to start
+------------
 
-<pre>
-pip install -r requirements.txt
-</pre>
+Easy way to strat the project is used Docker image (LXC). It is very easy - only run following commands in bash:
+
+```
+docker pull varhoo/vhm-server
+docker run -i -t -p 80:8000 varhoo/vhm-server
+```
+
+Detail of docker's image https://registry.hub.docker.com/u/pajinek/vhm-server/
+
+Following steps are for running on the common system:
+
+1) Installation
+
+```
+pip install -r requirements/basic.pip
+```
  
+2) Run server
 
-Run server
-
-<pre>
+```
 cd server
 python manage.py runserver
-</pre>
+```
  
+3) Run client
 
-Run client
-
-<pre>
+````
 cd tools
 python vhm_check.py
-</pre>
+````
 
 
 Default template for uwsgi socket (Python):
