@@ -48,7 +48,10 @@ def get_dns_expire(domain):
     if data[0] == 0:
         m = re.search(string_exp, data[1])
         if m:
-            return datetime.date(datetime.strptime(m.group(1), date_exp))
+            date_str = datetime.strptime(m.group(1), date_exp)
+            if date_str:
+                return datetime.date(date_str)
+            logger.warning("%s: %s" % (date_exp, data[1]))
     logger.warning("%s: %s" % (command, data))
     return None
 
