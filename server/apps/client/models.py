@@ -16,7 +16,7 @@ class Customer(models.Model):
     email = models.EmailField(max_length=200)
 
     def __unicode__(self):
-        return self.name
+        return "%s" % self.name
 
 
 class DomainCommmercial(models.Model):
@@ -24,7 +24,7 @@ class DomainCommmercial(models.Model):
     domain = models.ForeignKey(Domain)
 
     def __unicode__(self):
-        return self.domain
+        return "%s" % self.domain.name
 
     def get_info(self):
         return self.domain.description
