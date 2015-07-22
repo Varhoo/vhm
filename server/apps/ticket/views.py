@@ -3,11 +3,10 @@
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-#from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from forms import *
+from forms import CommentForm, TicketForm
 from models import Group, Ticket
 
 
