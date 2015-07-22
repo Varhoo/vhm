@@ -19,7 +19,7 @@ docker pull varhoo/vhm-server
 docker run -i -t -p 80:8000 varhoo/vhm-server
 ```
 
-Detail of docker's image https://registry.hub.docker.com/u/pajinek/vhm-server/
+Detail of docker's image https://registry.hub.docker.com/u/varhoo/vhm-server/
 
 Following steps are for running on the common system:
 
