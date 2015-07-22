@@ -9,8 +9,14 @@ It's client/server application for manage django, php projects on remote servers
 * Automation for update project
 * Monitoring remote systems
 
-How to start
+How to start 
 ------------
+
+***Client*** 
+
+How to setup and use system with client - https://github.com/Pajinek/vhm/wiki/Client
+
+***Server*** 
 
 Easy way to strat the project is used Docker image (LXC). It is very easy - only run following commands in bash:
 
@@ -42,6 +48,7 @@ python manage.py runserver
 cd tools
 python vhm_check.py
 ````
+
 
 
 Default template for uwsgi socket (Python):
