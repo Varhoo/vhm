@@ -9,7 +9,7 @@ APACHE_DIR_LOCATION = getattr(settings, "APACHE_DIR_LOCATION", '/var/www/')
 # old value
 APACHE_CREATE_DIR = getattr(settings, "APACHE_DIR_LOCATION", True)
 APACHE_GROUP = getattr(settings, "APACHE_GROUP", "webusers")
-APACHE_POWER = {1:[1,2], # slow - 1 proccess and 2 theaters
-                2:[2,4], # medium - 2 proccess and 4 theaters
-                3:[3,6] # hight - 3 proccess and 6 theaters
-                } 
+APACHE_POWER = {1: [1, 2],  # slow - 1 proccess and 2 theaters
+                2: [2, 4],  # medium - 2 proccess and 4 theaters
+                3: [3, 6]  # hight - 3 proccess and 6 theaters
+                }

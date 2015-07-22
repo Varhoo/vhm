@@ -10,9 +10,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         init(*args, **kwargs)
 
+
 def init(*args, **kwargs):
-    
-    #if repository exist, create .. print SvnRepository.objects.all()
+
+    # if repository exist, create .. print SvnRepository.objects.all()
     if len(args) > 1:
         print "Only one parametr"
         return False

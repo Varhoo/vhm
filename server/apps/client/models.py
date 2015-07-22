@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding: utf-8 
+# coding: utf-8
 # Author: Pavel Studeník
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
@@ -39,13 +39,14 @@ class Invoice(models.Model):
     date = models.DateField(default=datetime.now)
     month = models.IntegerField(help_text="Number of payed month")
     size = models.IntegerField(help_text="Number of subscieb GB")
-    sale = models.IntegerField(help_text="Sleva se zapocita do celkove sumy", default=0)
+    sale = models.IntegerField(
+        help_text="Sleva se zapocita do celkove sumy", default=0)
     price = models.IntegerField(help_text="Celkova suma se slevou", default=0)
     file = FileBrowseField("File", max_length=200, blank=True, null=True)
-    is_paid = models.BooleanField(default=False) 
+    is_paid = models.BooleanField(default=False)
 
     def date_end(self):
-        return (self.date + timedelta(self.month*365/12))
+        return (self.date + timedelta(self.month * 365 / 12))
 
     def __unicode__(self):
         return "%s %s" % (self.account, self.date.isoformat())

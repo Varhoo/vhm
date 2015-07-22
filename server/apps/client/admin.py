@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding: utf-8 
+# coding: utf-8
 # Author: Pavel Studeník
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
@@ -23,18 +23,18 @@ class InvoiceInline(admin.TabularInline):
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'tel') 
+    list_display = ('name', 'email', 'tel')
     inlines = [DomainInline, InvoiceInline]
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid') 
+    list_display = ('account', 'date', 'date_end', 'size', 'price', 'is_paid')
     fieldsets = (
         (None, {
             'fields':
                 ('account', 'user', 'date', ('month', 'size', 'sale'), 'price',
-                'is_paid', 'file', )
-        }),) 
+                 'is_paid', 'file', )
+        }),)
     readonly_fields = ['price', ]
 
     def queryset(self, request):

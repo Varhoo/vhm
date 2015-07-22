@@ -5,5 +5,5 @@ urlpatterns = patterns(
     'apps.consumer.views',
     (r'^$', 'startOpenID'),
     (r'^finish/$', 'finishOpenID'),
-#    (r'^xrds/$', 'rpXRDS'),
+    #    (r'^xrds/$', 'rpXRDS'),
 )

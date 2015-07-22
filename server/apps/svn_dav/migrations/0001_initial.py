@@ -11,27 +11,31 @@ class Migration(SchemaMigration):
         # Adding model 'SvnRepository'
         db.create_table(u'svn_dav_svnrepository', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
+            ('name', self.gf('django.db.models.fields.SlugField')
+             (unique=True, max_length=50)),
         ))
         db.send_create_signal(u'svn_dav', ['SvnRepository'])
 
         # Adding model 'SvnGroup'
         db.create_table(u'svn_dav_svngroup', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
+            ('name', self.gf('django.db.models.fields.SlugField')
+             (unique=True, max_length=50)),
         ))
         db.send_create_signal(u'svn_dav', ['SvnGroup'])
 
         # Adding model 'SvnUserRights'
         db.create_table(u'svn_dav_svnuserrights', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['auth.User'])),
             ('rights', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('path', self.gf('django.db.models.fields.CharField')(default='/', max_length=255)),
-            ('repository', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['svn_dav.SvnRepository'])),
+            ('path', self.gf('django.db.models.fields.CharField')
+             (default='/', max_length=255)),
+            ('repository', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['svn_dav.SvnRepository'])),
         ))
         db.send_create_signal(u'svn_dav', ['SvnUserRights'])
-
 
     def backwards(self, orm):
         # Deleting model 'SvnRepository'
@@ -42,7 +46,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'SvnUserRights'
         db.delete_table(u'svn_dav_svnuserrights')
-
 
     models = {
         u'auth.group': {

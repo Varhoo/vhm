@@ -11,65 +11,87 @@ class Migration(SchemaMigration):
         # Adding model 'Domain'
         db.create_table(u'core_domain', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('owner', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['auth.User'])),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('expirate', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now, null=True, blank=True)),
+            ('expirate', self.gf('django.db.models.fields.DateField')
+             (default=datetime.datetime.now, null=True, blank=True)),
             ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('last_modify', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('last_modify', self.gf('django.db.models.fields.DateTimeField')
+             (null=True, blank=True)),
         ))
         db.send_create_signal(u'core', ['Domain'])
 
         # Adding model 'Server'
         db.create_table(u'core_server', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('hostname', self.gf('django.db.models.fields.CharField')(unique=True, max_length=64)),
+            ('hostname', self.gf('django.db.models.fields.CharField')
+             (unique=True, max_length=64)),
             ('description', self.gf('django.db.models.fields.TextField')()),
             ('total_mem', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('total_hd', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('last_checked', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('global_ip', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
+            ('last_checked', self.gf('django.db.models.fields.DateTimeField')
+             (null=True, blank=True)),
+            ('global_ip', self.gf('django.db.models.fields.IPAddressField')
+             (default='0.0.0.0', max_length=15)),
             ('os_type', self.gf('django.db.models.fields.IntegerField')()),
-            ('token', self.gf('django.db.models.fields.CharField')(default='sf6tge@)(a_#!btve-2)8sr0fs_0bh-7*ymdjuavof!(oe-w!k', max_length=50)),
+            ('token', self.gf('django.db.models.fields.CharField')
+             (default='sf6tge@)(a_#!btve-2)8sr0fs_0bh-7*ymdjuavof!(oe-w!k', max_length=50)),
         ))
         db.send_create_signal(u'core', ['Server'])
 
         # Adding model 'Account'
         db.create_table(u'core_account', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('server', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Server'])),
-            ('name', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=64)),
-            ('path', self.gf('django.db.models.fields.CharField')(default='/var/www/', max_length=64)),
+            ('owner', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['auth.User'])),
+            ('server', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.Server'])),
+            ('name', self.gf('django.db.models.fields.SlugField')
+             (unique=True, max_length=64)),
+            ('path', self.gf('django.db.models.fields.CharField')
+             (default='/var/www/', max_length=64)),
             ('size', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('token', self.gf('django.db.models.fields.CharField')(default='0pomgpdpha0#rj0&f-31$j9k^tw-@4h!&u9#n@c0v157s_7c$2', max_length=50)),
+            ('token', self.gf('django.db.models.fields.CharField')
+             (default='0pomgpdpha0#rj0&f-31$j9k^tw-@4h!&u9#n@c0v157s_7c$2', max_length=50)),
             ('user', self.gf('django.db.models.fields.SlugField')(max_length=50)),
-            ('uid', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('gid', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('uid', self.gf('django.db.models.fields.IntegerField')
+             (null=True, blank=True)),
+            ('gid', self.gf('django.db.models.fields.IntegerField')
+             (null=True, blank=True)),
         ))
         db.send_create_signal(u'core', ['Account'])
 
         # Adding model 'Project'
         db.create_table(u'core_project', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Account'])),
-            ('owner', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('account', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.Account'])),
+            ('owner', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['auth.User'])),
             ('site', self.gf('django.db.models.fields.CharField')(max_length=126)),
             ('path', self.gf('django.db.models.fields.CharField')(max_length=126)),
             ('is_enabled', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('last_modify', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now, blank=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')
+             (default=datetime.datetime.now)),
+            ('last_modify', self.gf('django.db.models.fields.DateTimeField')
+             (default=datetime.datetime.now, blank=True)),
             ('note', self.gf('django.db.models.fields.TextField')(blank=True)),
         ))
         db.send_create_signal(u'core', ['Project'])
 
         # Adding model 'ProjectSetting'
         db.create_table(u'core_projectsetting', (
-            (u'project_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['core.Project'], unique=True, primary_key=True)),
+            (u'project_ptr', self.gf('django.db.models.fields.related.OneToOneField')
+             (to=orm['core.Project'], unique=True, primary_key=True)),
             ('repo_type', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('repo_url', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
-            ('repo_version', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True)),
+            ('repo_url', self.gf('django.db.models.fields.CharField')
+             (max_length=256, null=True, blank=True)),
+            ('repo_version', self.gf('django.db.models.fields.CharField')
+             (max_length=128, null=True, blank=True)),
             ('comment', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('last_update', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('last_update', self.gf('django.db.models.fields.DateTimeField')
+             (null=True, blank=True)),
         ))
         db.send_create_signal(u'core', ['ProjectSetting'])
 
@@ -80,16 +102,20 @@ class Migration(SchemaMigration):
             ('file_type', self.gf('django.db.models.fields.IntegerField')()),
             ('content', self.gf('django.db.models.fields.TextField')()),
             ('comment', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('last_update', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('last_update', self.gf('django.db.models.fields.DateTimeField')
+             (default=datetime.datetime.now)),
         ))
         db.send_create_signal(u'core', ['TemplateProc'])
 
         # Adding model 'ProjectProc'
         db.create_table(u'core_projectproc', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.ProjectSetting'])),
-            ('template', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.TemplateProc'])),
-            ('params', self.gf('django.db.models.fields.TextField')(max_length=256, null=True, blank=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.ProjectSetting'])),
+            ('template', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.TemplateProc'])),
+            ('params', self.gf('django.db.models.fields.TextField')
+             (max_length=256, null=True, blank=True)),
             ('is_running', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'core', ['ProjectProc'])
@@ -98,23 +124,27 @@ class Migration(SchemaMigration):
         db.create_table(u'core_domainalias', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('site', self.gf('django.db.models.fields.CharField')(max_length=126)),
-            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Project'])),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.Project'])),
         ))
         db.send_create_signal(u'core', ['DomainAlias'])
 
         # Adding model 'Ftpuser'
         db.create_table('ftpusers', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Account'])),
-            ('userid', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
+            ('account', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['core.Account'])),
+            ('userid', self.gf('django.db.models.fields.CharField')
+             (unique=True, max_length=50)),
             ('passwd', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('uid', self.gf('django.db.models.fields.IntegerField')()),
             ('gid', self.gf('django.db.models.fields.IntegerField')()),
-            ('homedir', self.gf('django.db.models.fields.CharField')(default='/var/www/', max_length=150)),
-            ('shell', self.gf('django.db.models.fields.CharField')(default='/bin/false', max_length=50)),
+            ('homedir', self.gf('django.db.models.fields.CharField')
+             (default='/var/www/', max_length=150)),
+            ('shell', self.gf('django.db.models.fields.CharField')
+             (default='/bin/false', max_length=50)),
         ))
         db.send_create_signal(u'core', ['Ftpuser'])
-
 
     def backwards(self, orm):
         # Deleting model 'Domain'
@@ -143,7 +173,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Ftpuser'
         db.delete_table('ftpusers')
-
 
     models = {
         u'auth.group': {

@@ -11,4 +11,3 @@ if __name__ == "__main__":
 #    srv.check_userid_all()
 #    srv.check_action_all()
 #    srv.check_demain_name("varhoo.cz")
-   

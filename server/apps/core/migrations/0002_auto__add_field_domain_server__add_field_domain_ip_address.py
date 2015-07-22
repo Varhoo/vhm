@@ -10,14 +10,15 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Domain.server'
         db.add_column(u'core_domain', 'server',
-                      self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True),
+                      self.gf('django.db.models.fields.CharField')(
+                          max_length=256, null=True, blank=True),
                       keep_default=False)
 
         # Adding field 'Domain.ip_address'
         db.add_column(u'core_domain', 'ip_address',
-                      self.gf('django.db.models.fields.CharField')(max_length=15, null=True, blank=True),
+                      self.gf('django.db.models.fields.CharField')(
+                          max_length=15, null=True, blank=True),
                       keep_default=False)
-
 
     def backwards(self, orm):
         # Deleting field 'Domain.server'
@@ -25,7 +26,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Domain.ip_address'
         db.delete_column(u'core_domain', 'ip_address')
-
 
     models = {
         u'auth.group': {

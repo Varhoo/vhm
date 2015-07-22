@@ -11,8 +11,10 @@ class Migration(SchemaMigration):
         # Adding model 'Action'
         db.create_table(u'xmlrpc_action', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('account', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apftpmy.Account'])),
-            ('last_modify', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('account', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['apftpmy.Account'])),
+            ('last_modify', self.gf('django.db.models.fields.DateTimeField')
+             (default=datetime.datetime.now)),
             ('command', self.gf('django.db.models.fields.IntegerField')()),
             ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
@@ -21,15 +23,18 @@ class Migration(SchemaMigration):
         # Adding model 'ActionServer'
         db.create_table(u'xmlrpc_actionserver', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('server', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apftpmy.Server'])),
-            ('last_modify', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('server', self.gf('django.db.models.fields.related.ForeignKey')
+             (to=orm['apftpmy.Server'])),
+            ('last_modify', self.gf('django.db.models.fields.DateTimeField')
+             (default=datetime.datetime.now)),
             ('command', self.gf('django.db.models.fields.IntegerField')()),
-            ('args', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('args', self.gf('django.db.models.fields.TextField')
+             (null=True, blank=True)),
             ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('exit_code', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('exit_code', self.gf('django.db.models.fields.IntegerField')
+             (null=True, blank=True)),
         ))
         db.send_create_signal(u'xmlrpc', ['ActionServer'])
-
 
     def backwards(self, orm):
         # Deleting model 'Action'
@@ -37,7 +42,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'ActionServer'
         db.delete_table(u'xmlrpc_actionserver')
-
 
     models = {
         u'apftpmy.account': {

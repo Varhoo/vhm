@@ -13,25 +13,27 @@ class Migration(SchemaMigration):
 
         # Adding field 'ActionServer.msg_result'
         db.add_column(u'xmlrpc_actionserver', 'msg_result',
-                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      self.gf('django.db.models.fields.TextField')(
+                          default='', blank=True),
                       keep_default=False)
 
-
         # Changing field 'ActionServer.command'
-        db.alter_column(u'xmlrpc_actionserver', 'command', self.gf('django.db.models.fields.TextField')(null=True))
+        db.alter_column(u'xmlrpc_actionserver', 'command', self.gf(
+            'django.db.models.fields.TextField')(null=True))
 
     def backwards(self, orm):
         # Adding field 'ActionServer.args'
         db.add_column(u'xmlrpc_actionserver', 'args',
-                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                      self.gf('django.db.models.fields.TextField')(
+                          null=True, blank=True),
                       keep_default=False)
 
         # Deleting field 'ActionServer.msg_result'
         db.delete_column(u'xmlrpc_actionserver', 'msg_result')
 
-
         # Changing field 'ActionServer.command'
-        db.alter_column(u'xmlrpc_actionserver', 'command', self.gf('django.db.models.fields.IntegerField')(default=''))
+        db.alter_column(u'xmlrpc_actionserver', 'command', self.gf(
+            'django.db.models.fields.IntegerField')(default=''))
 
     models = {
         u'apftpmy.account': {

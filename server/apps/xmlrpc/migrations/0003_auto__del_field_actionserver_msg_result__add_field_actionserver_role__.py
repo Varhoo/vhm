@@ -13,19 +13,21 @@ class Migration(SchemaMigration):
 
         # Adding field 'ActionServer.role'
         db.add_column(u'xmlrpc_actionserver', 'role',
-                      self.gf('django.db.models.fields.CharField')(default='root', max_length=64),
+                      self.gf('django.db.models.fields.CharField')(
+                          default='root', max_length=64),
                       keep_default=False)
 
         # Adding field 'ActionServer.result'
         db.add_column(u'xmlrpc_actionserver', 'result',
-                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      self.gf('django.db.models.fields.TextField')(
+                          default='', blank=True),
                       keep_default=False)
-
 
     def backwards(self, orm):
         # Adding field 'ActionServer.msg_result'
         db.add_column(u'xmlrpc_actionserver', 'msg_result',
-                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
+                      self.gf('django.db.models.fields.TextField')(
+                          default='', blank=True),
                       keep_default=False)
 
         # Deleting field 'ActionServer.role'
@@ -33,7 +35,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'ActionServer.result'
         db.delete_column(u'xmlrpc_actionserver', 'result')
-
 
     models = {
         u'apftpmy.account': {

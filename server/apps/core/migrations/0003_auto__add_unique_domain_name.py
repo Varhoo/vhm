@@ -11,11 +11,9 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'Domain', fields ['name']
         db.create_unique(u'core_domain', ['name'])
 
-
     def backwards(self, orm):
         # Removing unique constraint on 'Domain', fields ['name']
         db.delete_unique(u'core_domain', ['name'])
-
 
     models = {
         u'auth.group': {

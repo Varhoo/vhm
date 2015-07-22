@@ -10,14 +10,13 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'ActionServer.command_type'
         db.add_column(u'xmlrpc_actionserver', 'command_type',
-                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      self.gf('django.db.models.fields.IntegerField')(
+                          default=0),
                       keep_default=False)
-
 
     def backwards(self, orm):
         # Deleting field 'ActionServer.command_type'
         db.delete_column(u'xmlrpc_actionserver', 'command_type')
-
 
     models = {
         u'apftpmy.account': {

@@ -29,12 +29,12 @@ OpenIDServiceEndpoint.openid_type_uris = SERVICE_NS
 
 SREG_ATTRIBUTES = sreg.data_fields.keys()
 
-AX_ATTRIBUTES= [
-  u'http://axschema.org/namePerson/first', 
-  u'http://axschema.org/namePerson/last', 
+AX_ATTRIBUTES = [
+    u'http://axschema.org/namePerson/first',
+  u'http://axschema.org/namePerson/last',
   u'http://axschema.org/contact/email',
-  ]
- 
+]
+
 """
 # http://www.axschema.org/types/
 AX_ATTRIBUTES = [
@@ -139,6 +139,7 @@ PAPE_POLICIES = [
 POLICY_PAIRS = [(p, getattr(pape, p))
                 for p in PAPE_POLICIES]
 
+
 def getOpenIDStore():
     """
     Return an OpenID store object fit for the currently-chosen
@@ -146,11 +147,13 @@ def getOpenIDStore():
     """
     return util.getOpenIDStore('/tmp/djopenid_c_store', 'c_')
 
+
 def getConsumer(request):
     """
     Get a Consumer object to perform OpenID authentication.
     """
     return consumer.Consumer(request.session, getOpenIDStore())
+
 
 def renderIndexPage(request, **template_args):
     template_args['ns'] = SERVICE_NS
@@ -159,10 +162,11 @@ def renderIndexPage(request, **template_args):
     template_args['consumer_url'] = util.getViewURL(request, startOpenID)
     template_args['pape_policies'] = POLICY_PAIRS
 
-    response =  direct_to_template(
+    response = direct_to_template(
         request, 'login.html', template_args)
     response[YADIS_HEADER_NAME] = util.getViewURL(request, rpXRDS)
     return response
+
 
 def startOpenID(request):
     """
@@ -185,15 +189,15 @@ def startOpenID(request):
         openid_url = request.POST['openid_identifier']
         c = getConsumer(request)
         error = None
-        
+
         if request.session.has_key(Discovery.PREFIX + c.session_key_prefix):
             del request.session[Discovery.PREFIX + c.session_key_prefix]
-        
+
         if not request.POST.has_key('ns'):
             OpenIDServiceEndpoint.openid_type_uris = SERVICE_NS
         else:
             OpenIDServiceEndpoint.openid_type_uris = request.POST.getlist('ns')
-        
+
         try:
             auth_request = c.begin(openid_url)
         except DiscoveryFailure, e:
@@ -209,16 +213,17 @@ def startOpenID(request):
         # server doesn't support sreg or won't return any of the
         # fields.
         if request.POST.has_key('sreg'):
-            sreg_request = sreg.SRegRequest(optional=[], required=request.POST.getlist('sreg'))
+            sreg_request = sreg.SRegRequest(
+                optional=[], required=request.POST.getlist('sreg'))
             auth_request.addExtension(sreg_request)
 
-        if True: #request.POST.has_key('ax'):
+        if True:  # request.POST.has_key('ax'):
             # Add Attribute Exchange request information.
             ax_request = ax.FetchRequest()
             # XXX - uses myOpenID-compatible schema values, which are
             # not those listed at axschema.org.
-            #for uri in request.POST.getlist('ax'):
-            for uri in AX_ATTRIBUTES: 
+            # for uri in request.POST.getlist('ax'):
+            for uri in AX_ATTRIBUTES:
                 ax_request.add(
                     ax.AttrInfo(uri, required=True))
             auth_request.addExtension(ax_request)
@@ -229,12 +234,12 @@ def startOpenID(request):
         requested_policies = []
         policy_prefix = 'policy_'
         for k, v in request.POST.iteritems():
-            #print k,v
+            # print k,v
             if k.startswith(policy_prefix):
                 policy_attr = k[len(policy_prefix):]
                 if policy_attr in PAPE_POLICIES:
                     requested_policies.append(getattr(pape, policy_attr))
-                    
+
         print requested_policies
         if requested_policies:
             pape_request = pape.Request(requested_policies)
@@ -262,7 +267,8 @@ def startOpenID(request):
                 request, 'consumer/request_form.html', {'html': form_html})
 
     return renderIndexPage(request)
-    #return index(request)
+    # return index(request)
+
 
 def finishOpenID(request):
     """
@@ -289,7 +295,7 @@ def finishOpenID(request):
         # protocol.
         return_to = util.getViewURL(request, finishOpenID)
         response = c.complete(request_args, return_to)
-        
+
         # Get a Simple Registration response object if response
         # information was included in the OpenID response.
         sreg_response = {}
@@ -323,10 +329,10 @@ def finishOpenID(request):
              'sreg_response': sreg_response and sreg_response.iteritems(),
              'ax_response': ax_items.items(),
              'pape': pape_response}
-            }
+        }
 
         result = results[response.status]
-        
+
         print result
         if not result.has_key("error"):
             data_array = [it[1][0] for it in result["ax_response"]]
@@ -337,7 +343,7 @@ def finishOpenID(request):
                 "last_name": data_array[1],
                 "email": data_array[2],
             }
-            return create_profil_from_ipenid(request,data)
+            return create_profil_from_ipenid(request, data)
 
         if isinstance(response, consumer.FailureResponse):
             # In a real application, this information should be
@@ -347,6 +353,7 @@ def finishOpenID(request):
             result['failure_reason'] = response.message
 
     return renderIndexPage(request, **result)
+
 
 def rpXRDS(request):
     """
