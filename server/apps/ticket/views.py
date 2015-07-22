@@ -1,13 +1,14 @@
 # coding:utf8
 
-from models import Ticket, Group
-from forms import *
+from django.core.mail import send_mail
+from django.db.models import Q
+from django.http import HttpResponseRedirect
 #from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
-from django.db.models import Q
-from django.core.mail import send_mail
+
+from forms import *
+from models import Group, Ticket
 
 
 def check_auth(request):

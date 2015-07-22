@@ -5,13 +5,17 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-import sys
-import os
 import commands
+import os
 import re
-from django.core.management import setup_environ
+import sys
+
 from django.conf import settings as sett
+from django.core.management import setup_environ
 from django.template.defaultfilters import slugify
+
+from apps.apftpmy.models import *
+from apps.apftpmy.settings import *
 
 set_param_out_dir = None
 set_param_no_chown = None
@@ -29,7 +33,6 @@ APACHE_CREATE_DIR = True
 # load settings from django
 sys.path.append(os.path.normpath(ROOT_PATH + "/../../../"))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
-from django.core.management import setup_environ
 try:
     import settings
 except:
@@ -94,8 +97,6 @@ setup_environ(settings)
 # get admin information
 admin = [item for item in settings.ADMINS][0]
 
-from apps.apftpmy.models import *
-from apps.apftpmy.settings import *
 #from apacheiis.apache.settings import *
 
 # get all objects for apache2

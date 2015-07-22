@@ -1,7 +1,9 @@
-from django.db import models
-from apps.core.models import Server
-from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
+
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+from apps.core.models import Server
 
 
 class Record(models.Model):

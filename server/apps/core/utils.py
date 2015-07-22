@@ -1,10 +1,10 @@
 #!/bin/python
 
 import commands
-import re
-from datetime import datetime
-import socket
 import logging
+import re
+import socket
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 

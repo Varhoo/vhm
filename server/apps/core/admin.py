@@ -4,9 +4,10 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-from models import *
 from django.contrib import admin
 from django.core.urlresolvers import reverse
+
+from models import *
 
 
 class MultiDBModelAdmin(admin.ModelAdmin):

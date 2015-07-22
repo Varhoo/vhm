@@ -1,8 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from hashlib import sha1
 import base64
+from hashlib import sha1
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
 
 
 def create_htpasswd(raw_password):

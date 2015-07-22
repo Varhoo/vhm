@@ -1,11 +1,13 @@
 # Create your views here.
+import random
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
+
 from models import *
-import random
 
 
 def create_profil_from_ipenid(request, result):

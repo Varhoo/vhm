@@ -4,17 +4,17 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
+from datetime import date, datetime
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+
 from django.conf import settings
 from django.db import models
-from datetime import datetime, date
+from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.core.models import *
 from apps.monitoring.models import *
-
 
 STATUS_ENUM = (
     (0, "Waiting"),

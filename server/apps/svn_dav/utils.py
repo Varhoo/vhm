@@ -3,11 +3,12 @@
 # email: studenik@varhoo.cz
 # year: 2015
 
-import os
 import hashlib
-from settings import *
-from models import SvnRepository, SvnUserRights
+import os
+
 from apps.auth.models import UserProfile
+from models import SvnRepository, SvnUserRights
+from settings import *
 
 
 def md5sum(filename, blocksize=65536):

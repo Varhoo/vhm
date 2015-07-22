@@ -5,12 +5,14 @@
 # Email: studenik@varhoo.cz
 # Date: 28.9.2012
 
-from django.core.management.base import BaseCommand, CommandError
 from datetime import datetime
-from apps.task_automatic.models import *
-from django.core.mail import mail_admins
-from django.contrib.auth.models import User
+
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import mail_admins
+from django.core.management.base import BaseCommand, CommandError
+
+from apps.task_automatic.models import *
 from croniter import croniter
 
 # maybe it was better use value from settings

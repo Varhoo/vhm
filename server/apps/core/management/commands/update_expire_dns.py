@@ -6,13 +6,13 @@
 # Date: 10.2.2010
 
 
+from datetime import datetime
+from time import sleep
+
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.core.models import *
 from apps.core.utils import *
-
-from time import sleep
-from datetime import datetime
 
 
 class Command(BaseCommand):

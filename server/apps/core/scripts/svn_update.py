@@ -5,12 +5,15 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-import sys
-import os
 import commands
+import os
 import re
-from django.core.management import setup_environ
+import sys
+
 from django.conf import settings as sett
+from django.core.management import setup_environ
+
+from apps.apftpmy.models import ApacheAlias
 
 # root path
 ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -18,7 +21,6 @@ ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 # load settings from django
 sys.path.append(os.path.normpath(ROOT_PATH + "/../../../"))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
-from django.core.management import setup_environ
 try:
     import settings
 except:
@@ -26,7 +28,6 @@ except:
     sys.stderr.write(msg)
     exit(0)
 
-from apps.apftpmy.models import ApacheAlias
 
 objects = ApacheAlias.objects.filter(repo_url__gt="")
 update_count = 0

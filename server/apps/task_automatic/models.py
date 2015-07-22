@@ -3,15 +3,16 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-from django.db import models
-import settings
 import random
-from datetime import *
-from django.contrib.auth.models import User
-from django.template.defaultfilters import filesizeformat
-from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
 import traceback
+from datetime import *
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext_lazy as _
+
+import settings
 from enums import *
 
 

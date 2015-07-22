@@ -4,24 +4,21 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
-import random
 import os
+import random
 from datetime import *
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import filesizeformat
-from django.contrib.auth.models import User
-from django.template import Context
-from django.template import Template
 
 from django.conf import settings
-from apps.core import settings
-
-from utils import *
-
+from django.contrib.auth.models import User
+from django.db import models
+from django.template import Context, Template
+from django.template.defaultfilters import filesizeformat
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
+
+from apps.core import settings
+from utils import *
 
 abspath = os.path.abspath
 

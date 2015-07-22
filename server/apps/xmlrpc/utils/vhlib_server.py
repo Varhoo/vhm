@@ -1,8 +1,9 @@
-import sys
+import commands
 import os
 import re
+import sys
 import xmlrpclib
-import commands
+
 import utils
 
 

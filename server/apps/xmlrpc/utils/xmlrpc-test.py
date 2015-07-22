@@ -1,5 +1,5 @@
-from vhlib_server import *
 from vhlib_client import *
+from vhlib_server import *
 
 if __name__ == "__main__":
 #   app = App("localhost:8000","ahoj")

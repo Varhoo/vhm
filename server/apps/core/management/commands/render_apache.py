@@ -6,18 +6,18 @@
 # Date: 10.2.2010
 
 
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from django.template.defaultfilters import slugify
-
-from apps.svn_dav.models import *
-from apps.auth.models import *
-from apps.apftpmy.models import *
-from apps.apftpmy.settings import *
-
 import os
 import sys
 from json import JSONEncoder
+
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand, CommandError
+from django.template.defaultfilters import slugify
+
+from apps.apftpmy.models import *
+from apps.apftpmy.settings import *
+from apps.auth.models import *
+from apps.svn_dav.models import *
 
 
 class Command(BaseCommand):

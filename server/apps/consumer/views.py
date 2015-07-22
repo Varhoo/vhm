@@ -3,6 +3,9 @@ from django import http
 from django.http import HttpResponseRedirect
 from django.views.generic.simple import direct_to_template
 
+import util
+from apps.auth.views import create_profil_from_ipenid, index
+
 try:
     from openid.consumer import consumer
     from openid.consumer.discover import DiscoveryFailure, OPENID_IDP_2_0_TYPE, OPENID_2_0_TYPE, OPENID_1_1_TYPE, OPENID_1_0_TYPE, OpenIDServiceEndpoint
@@ -13,9 +16,7 @@ try:
 except:
     print "yum install python-mojeid"
 
-import util
 
-from apps.auth.views import create_profil_from_ipenid, index
 
 SERVICE_NS = [
     OPENID_IDP_2_0_TYPE,
