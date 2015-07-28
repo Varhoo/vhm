@@ -8,15 +8,15 @@ import settings
 
 ENUM_STATUS = (
     (1, "NEW"),
-  (2, "PROGRESS"),
-  (3, "CLOSED"),
-  (4, "DUPLICATED"),
+    (2, "PROGRESS"),
+    (3, "CLOSED"),
+    (4, "DUPLICATED"),
 )
 
 ENUM_PRIORITY = (
     (1, "Low"),
-  (2, "Medium"),
-  (3, "High"),
+    (2, "Medium"),
+    (3, "High"),
 )
 
 

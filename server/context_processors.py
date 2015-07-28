@@ -1,12 +1,12 @@
 # coding: utf-8
 
-from django.contrib.sites.models import Site
-from django.conf import settings
-from django.http import HttpResponsePermanentRedirect
-
 import random
-from time import time
 from math import *
+from time import time
+
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.http import HttpResponsePermanentRedirect
 
 COUNT_ILLUSTRATION = 6
 

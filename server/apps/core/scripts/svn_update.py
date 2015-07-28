@@ -47,7 +47,7 @@ for it in objects:
 
         result = commands.getstatusoutput(command)
         if not result[1].startswith("At revision"):
-            #fix problem revision, reload only when python sripts changes
+            # fix problem revision, reload only when python sripts changes
             update_count = update_count + 1
             print "update projects %s exit code %d" % (it.account, result[0])
             print result[1]

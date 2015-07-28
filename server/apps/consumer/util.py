@@ -66,7 +66,7 @@ def getOpenIDStore(filestore_path, table_prefix):
     except KeyError:
         raise ImproperlyConfigured, \
             "Database engine %s not supported by OpenID library" % \
-              (settings.DATABASE_ENGINE,)
+            (settings.DATABASE_ENGINE,)
 
     try:
         s.createTables()

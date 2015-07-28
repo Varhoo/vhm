@@ -3,25 +3,32 @@
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 import os
-ROOT_PATH = os.path.abspath("%s/../" % os.path.dirname(os.path.realpath(__file__)))
+
+ROOT_PATH = os.path.abspath(
+    "%s/../" % os.path.dirname(os.path.realpath(__file__)))
 
 ADMINS = (
-     ('Pavel Studenik', 'studenik@varhoo.cz'),
+    ('Pavel Studenik', 'studenik@varhoo.cz'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',	 # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '%s/data.db' % ROOT_PATH,               # Or path to database file if using sqlite3.
+        # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or
+        # 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Or path to database file if using sqlite3.
+        'NAME': '%s/data.db' % ROOT_PATH,
         'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '', 
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': ''                      # Set to empty string for default. Not used with sqlite3.
+        'PASSWORD': '',
+        # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': '',
+        # Set to empty string for default. Not used with sqlite3.
+        'PORT': ''
     }
 }
 
@@ -51,7 +58,7 @@ USE_L10N = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = (
-    "%s/%s/" % (ROOT_PATH, 'media')
+    os.path.join(ROOT_PATH, 'media')
 )
 
 
@@ -64,14 +71,14 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = "%s/%s/" % (ROOT_PATH, 'static')
+STATIC_ROOT = os.path.join(ROOT_PATH, 'static')
 
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-ADMIN_MEDIA_PATH =  ROOT_PATH + '/static/grappelli/'
+ADMIN_MEDIA_PATH = os.path.join(ROOT_PATH, 'static/grappelli')
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'h*fq2k11@o$byy@j^633lszuzqijzc!(y^!0c=14z2@qhkif23'
@@ -80,7 +87,7 @@ SECRET_KEY = 'h*fq2k11@o$byy@j^633lszuzqijzc!(y^!0c=14z2@qhkif23'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+#   'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -98,7 +105,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    ROOT_PATH + "/templates/",
+    os.path.join(ROOT_PATH, "templates"),
 )
 
 # List of finder classes that know how to find static files in
@@ -106,7 +113,7 @@ TEMPLATE_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+#   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 
@@ -149,13 +156,13 @@ AUTH_PROFILE_MODULE = 'apps.auth.models.UserProfil'
 
 APACHE_GROUP = "webuser"
 
-# nastavení administrace
-GRAPPELLI_ADMIN_HEADLINE =  'Varhoo Administrace'
-GRAPPELLI_ADMIN_TITLE = 'Varhoo Administrace'
+# setting of web adminsitration
+GRAPPELLI_ADMIN_HEADLINE = 'Varhoo Administration'
+GRAPPELLI_ADMIN_TITLE = 'Varhoo Administration'
 
-FILEBROWSER_MEDIA_ROOT = "%s/media/" % ROOT_PATH
+FILEBROWSER_MEDIA_ROOT = os.path.join(ROOT_PATH, "media ")
 FILEBROWSER_DIRECTORY = ""
 FILEBROWSER_MEDIA_URL = "/media/"
 
 TINYMCE_JS_URL = "/media/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT =  MEDIA_ROOT + "grappelli/tinymce/jscripts/tiny_mce/"
+TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "grappelli/tinymce/jscripts/tiny_mce")

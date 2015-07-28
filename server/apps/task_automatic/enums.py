@@ -9,7 +9,7 @@ STATUS_ENUM_DONE = 2
 STATUS_ENUM_ERROR = 3
 STATUS_ENUM = (
     (STATUS_ENUM_WAIT, "Waiting"),
-   (STATUS_ENUM_INPROGRESS, "In progress"),
-   (STATUS_ENUM_DONE, "Done"),
-   (STATUS_ENUM_ERROR, "Error"),
+    (STATUS_ENUM_INPROGRESS, "In progress"),
+    (STATUS_ENUM_DONE, "Done"),
+    (STATUS_ENUM_ERROR, "Error"),
 )

@@ -18,9 +18,9 @@ from apps.monitoring.models import *
 
 STATUS_ENUM = (
     (0, "Waiting"),
-   (1, "In progress"),
-   (2, "Done"),
-   (3, "Error"),
+    (1, "In progress"),
+    (2, "Done"),
+    (3, "Error"),
 )
 
 

@@ -2,11 +2,12 @@
 import os
 import sys
 
+from django.core.management import execute_manager
+
 activate_this = 'env/bin/activate_this.py'
 if os.path.exists(activate_this):
     execfile(activate_this, dict(__file__=activate_this))
 
-from django.core.management import execute_manager
 try:
     import settings.production  # Assumed to be in the same directory.
 except ImportError:

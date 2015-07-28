@@ -15,7 +15,7 @@ def create_profil_from_ipenid(request, result):
     if not profile:
         # user not exist
         # create and save user
-# TODO
+        # TODO
         # * generate password
         # * generate login
         username = "guest%d" % random.randrange(1, 10000, 1)

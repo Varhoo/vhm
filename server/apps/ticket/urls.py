@@ -9,5 +9,6 @@ urlpatterns = patterns('',
                            name='tickets_all'),
                        url(r'^id/(?P<id>[0-9]+)$',
                            'apps.ticket.views.show_item', name='ticket_id'),
-                       url(r'^new/$', 'apps.ticket.views.new_item', name='ticket_new'),
+                       url(r'^new/$', 'apps.ticket.views.new_item',
+                           name='ticket_new'),
                        )

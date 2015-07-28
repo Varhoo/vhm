@@ -1,12 +1,12 @@
 # coding: utf-8
 
-from django.conf.urls import patterns, url, include
-from filebrowser.sites import site
 from django.conf import settings
-from django.views.generic import RedirectView
-
+from django.conf.urls import include, patterns, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.views.generic import RedirectView
+from filebrowser.sites import site
+
 admin.autodiscover()
 
 

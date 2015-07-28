@@ -24,26 +24,26 @@ abspath = os.path.abspath
 
 POWER_ENUM = (
     (1, "Low"),
-  (2, "Medium"),
-  (3, "Hight"),
+    (2, "Medium"),
+    (3, "Hight"),
 )
 
 REPOS_ENUM = (
     (0, "None"),
-  (1, "SVN"),
-  (2, "GIT"),
+    (1, "SVN"),
+    (2, "GIT"),
 )
 
 MODE_ENUM_APACHE = 1
 MODE_ENUM_VHM = 2
 MODE_ENUM = (
     (MODE_ENUM_APACHE, "Apache"),
-  (MODE_ENUM_VHM, "VHM-manager"),
+    (MODE_ENUM_VHM, "VHM-manager"),
 )
 
 OS_ENUM = (
     (0, "Ubuntu/Debian"),
-  (1, "Fedora/CentOS/RHEL"),
+    (1, "Fedora/CentOS/RHEL"),
 )
 
 
@@ -97,7 +97,7 @@ class Account(models.Model):
     name = models.SlugField(_("Name"), max_length=64, unique=True)
     path = models.CharField(
         max_length=64, help_text="Určuje cestu k webove prezentaci %s" %
-                            settings.APACHE_DIR_LOCATION, default=settings.APACHE_DIR_LOCATION)
+        settings.APACHE_DIR_LOCATION, default=settings.APACHE_DIR_LOCATION)
     size = models.BigIntegerField(_('Size'), default=0)
     token = models.CharField(max_length=50, default="".join(
         [random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]))
@@ -231,7 +231,7 @@ class DomainAlias(models.Model):
 
 
 class Ftpuser(models.Model):
-# userid 	passwd 	uid 	gid 	homedir 	shell 	count 	accessed 	modified
+    # userid 	passwd 	uid 	gid 	homedir 	shell 	count 	accessed 	modified
     account = models.ForeignKey(Account)
     userid = models.CharField(max_length=50, unique=True)
     passwd = models.CharField(max_length=50)

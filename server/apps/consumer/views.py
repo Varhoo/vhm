@@ -17,7 +17,6 @@ except:
     print "yum install python-mojeid"
 
 
-
 SERVICE_NS = [
     OPENID_IDP_2_0_TYPE,
     OPENID_2_0_TYPE,
@@ -32,8 +31,8 @@ SREG_ATTRIBUTES = sreg.data_fields.keys()
 
 AX_ATTRIBUTES = [
     u'http://axschema.org/namePerson/first',
-  u'http://axschema.org/namePerson/last',
-  u'http://axschema.org/contact/email',
+    u'http://axschema.org/namePerson/last',
+    u'http://axschema.org/contact/email',
 ]
 
 """

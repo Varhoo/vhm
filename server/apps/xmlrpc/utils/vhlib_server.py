@@ -75,8 +75,8 @@ class ServerApp:
                 self.token, it["id"], 1)
             status = {
                 1: lambda x, y: self.__action_update(x, y),
-              2: lambda x, y: "action 2" + x,
-              3: lambda x, y: "action 3" + x
+                2: lambda x, y: "action 2" + x,
+                3: lambda x, y: "action 3" + x
             }[it["command"]](it["args"], it["srv"])
             if status == 0:
                 result = self.rpc_srv.action_server_status(
@@ -99,7 +99,7 @@ class ServerApp:
             return data
         res = {
             0: lambda x: deb(x),
-           1: lambda x: rpm(x),
+            1: lambda x: rpm(x),
         }[srv](args)
 
         print "result:", res[0]

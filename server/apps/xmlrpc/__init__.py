@@ -15,8 +15,8 @@ def account_save(sender, instance, **kwargs):
     if kwargs["created"]:
         a = ActionServer(
             command="user::create::%s::%s" % (instance.user, instance.path),
-                         command_type=100,
-                         server=instance.server)
+            command_type=100,
+            server=instance.server)
         a.save()
     else:
         pass
@@ -36,6 +36,6 @@ def project_save(sender, instance, **kwargs):
     if kwargs["created"]:
         a = ActionServer(
             command="proc::update::%s" % (int(instance.project.id)),
-                     command_type=100,
-                     server=instance.project.account.server)
+            command_type=100,
+            server=instance.project.account.server)
         a.save()

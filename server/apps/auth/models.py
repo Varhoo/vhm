@@ -52,7 +52,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         profile.hash_pass = create_htpasswd(instance.hash_pass)
         profile.save()
     else:
-    # update password
+        # update password
         try:
             up = UserProfile.objects.get(user=instance.id)
             up.hash_pass = create_htpasswd(instance.hash_pass)

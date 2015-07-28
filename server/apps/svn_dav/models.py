@@ -5,7 +5,7 @@ from filebrowser.fields import FileBrowseField
 
 ENUM_RIGHTS = (
     (1, "Read"),
-  (2, "Read and Write"),
+    (2, "Read and Write"),
 )
 
 
