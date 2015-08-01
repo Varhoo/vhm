@@ -1,7 +1,7 @@
 
 import os
-import sys
 import platform
+import sys
 
 
 def get_installed_packes():

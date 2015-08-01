@@ -4,21 +4,20 @@
 # email: studenik@varhoo.cz
 # date: 5.10.2012
 
-import sys
-import os
 import commands
-import re
-# parse python file
 import compiler
+import logging
+import os
+import re
+import sys
+
+from vhmlib.config import Config
+from vhmlib.manager import manager
+from vhmlib.vhmcli import *
+from vhmlib.vhmserver import *
 
 # dynamic path for importing
 ROOT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), ".")
-
-from vhmlib.vhmserver import *
-from vhmlib.manager import manager
-from vhmlib.vhmcli import *
-from vhmlib.config import Config
-import logging
 
 
 def main():

@@ -4,10 +4,12 @@
 # email: studenik@varhoo.cz
 # date: 5.10.2012
 
-import smtplib
-import os
 import commands
+import os
+import smtplib
 from email.mime.text import MIMEText
+
+
 #from django.core.mail import send_mail
 
 

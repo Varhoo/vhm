@@ -5,30 +5,69 @@
 # Date: 10.2.2010
 
 
-import sys
+import commands
+import errno
+import importlib
+import logging
 import os
 import re
-import xmlrpclib
-import commands
 import subprocess
-import utils
-import logging
+import sys
+import xmlrpclib
+from socket import error as socket_error
+from user import User
+
 import psutil
 import requests
-import errno
-from user import User
-from socket import error as socket_error
-from repository import *
+import utils
 from manager import manager
+from repository import *
 
 ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath',
                     'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans',
                     'pidfile', "wsgi-file", "socket"]
 
 ROOT_HTTPD = {
-    0: "/etc/apache2/sites-enabled/",  # site enable for debian
-    1: "/etc/httpd/conf.d/"  # site enable for fedora
+    0: "./etc/apache2/sites-enabled/",  # site enable for debian
+    1: "./etc/httpd/conf.d/"  # site enable for fedora
 }
+
+log = logging.getLogger(__name__)
+
+
+class RemoteAction:
+    status = -1
+    result = ""
+
+    def __init__(self, model):
+        self.model = model
+
+
+class Account(RemoteAction):
+
+    def update(self, id):
+        pass
+
+    def create(self, id):
+        d = []
+        u = User(d[2])
+        u.create(conf.group, d[3])
+        self.rpc_srv.set_account_uidguid(
+            self.token, u.username, u.uid, u.gid)
+        status = 0
+        result = "%s %s %s" % (u.username, u.uid, u.gid)
+
+
+class ProjectSetting(RemoteAction):
+
+    def update(self, id):
+        self.status = self.model.get_projectproc(self.model.conf, int(id))
+
+
+class ProjectProc(RemoteAction):
+
+    def update(self, id):
+        self.status = self.model.get_projectproc(self.model.conf, int(id))
 
 
 def getFolderSize(folder):
@@ -68,20 +107,18 @@ class ServerApp:
         self.url = "%s://%s/xmlrpc/" % (protocol, conf.server)
         self.rpc_srv = xmlrpclib.ServerProxy(self.url, verbose=conf.verbose)
         self.conf = conf
-
         logging.basicConfig(level=conf.debuglevel)
-        self.log = logging
 
     def login(self, token):
         self.token = token
         try:
             ping = self.rpc_srv.ping(self.token)
         except socket_error:
-            self.log.error("it's not possible to connect %s" % self.url)
+            log.error("it's not possible to connect %s" % self.url)
             return False
 
         if not ping:
-            print "INFO: token does not exist"
+            log.error("token does not exist")
             return False
         if self.conf.verbose > 0:
             print self.conf.server, ping
@@ -116,7 +153,7 @@ class ServerApp:
                 u = User(it["user"])
             except TypeError:
                 return False
-            self.log.debug("uid=%s gid=%s" % (u.uid, u.gid))
+            log.debug("uid=%s gid=%s" % (u.uid, u.gid))
             self.rpc_srv.set_account_uidguid(
                 self.token,
                 u.username,
@@ -134,9 +171,9 @@ class ServerApp:
             path, repo_id = it["path"], it["repo_type"]
 
             if not os.path.exists(path):
-                self.log.error("path %s not exists" % path)
+                log.error("path %s not exists" % path)
             else:
-                self.log.debug("%d: (%s)" % (repo_id, path))
+                log.debug("%d: (%s)" % (repo_id, path))
 
                 if repo_id == 1:  # SVN
                     res = update_repo_svn(it)
@@ -144,7 +181,7 @@ class ServerApp:
                     res = update_repo_git(it)
 
     def execute(self, command):
-        self.log.info("command: %s" % command)
+        log.info("command: %s" % command)
         result = commands.getstatusoutput(command)
         return result
 
@@ -156,7 +193,7 @@ class ServerApp:
     def apache_reload(self):
         # restart apache service
         command = "service apache2 reload"
-        self.log.info("command: %s" % command)
+        log.info("command: %s" % command)
         return self.execute(command)
 
     def monitoring(self):
@@ -205,7 +242,7 @@ class ServerApp:
 
                     with open(filename, "w") as f:
                         f.write(content)
-                        self.log.info("write to file %s" % filename)
+                        log.info("write to file %s" % filename)
                         f.close()
 
                 elif key == "2":
@@ -217,47 +254,25 @@ class ServerApp:
                         content = "\n".join(rows)
                         with open(filename, "w") as f:
                             f.write("<vhm>\n%s\n</vhm>" % content)
-                            self.log.info("write to file %s" % filename)
+                            log.info("write to file %s" % filename)
                             f.close()
         return 0
 
     def do_all_actions(self, conf):
         data = self.rpc_srv.action_server_list(self.token)
-        result = None
+
         # FIXME
         for it in data:
-
             self.rpc_srv.action_server_status(self.token, it["id"], 1)
             if int(it["command_type"]) == 100:
-                d = it["command"].split("::")
 
-                # check project
-                if d[0] == "proc":
-                    if d[1] in ["create", "update"]:
-                        status = self.get_projectproc(conf, int(d[2]))
-                        result = ""
-
-                # update repository
-                if d[0] == "repository":
-                    if d[1] in ["update"]:
-                        if d[2] in ["all"]:
-                            self.check_repo_all()
-
-                # check projects ##
-                if d[0] == "project":
-                    if d[1] in ["create", "update"]:
-                        status = self.get_projectproc(conf, int(d[2]))
-                        result = ""
-
-                # check users ##
-                if d[0] == "user":
-                    u = User(d[2])
-                    if d[1] == "create":
-                        u.create(conf.group, d[3])
-                    self.rpc_srv.set_account_uidguid(
-                        self.token, u.username, u.uid, u.gid)
-                    status = 0
-                    result = "%s %s %s" % (u.username, u.uid, u.gid)
+                name, action, id = it["command"].split("::")
+                log.info("Run: %s %s %s" % (name, action, id))
+                model = eval(name)
+                m = model(self)
+                getattr(m, action)(id)
+                status = m.status
+                result = m.result
 
             elif int(it["command_type"]) == 0:
                 if os.geteuid() == 0:
@@ -265,7 +280,7 @@ class ServerApp:
                 else:
                     cmd = "%s" % (it["command"])
                 status, result = self.execute(cmd)
-                self.log.debug("[%s] %s" % (status, result))
+                log.debug("[%s] %s" % (status, result))
             else:
                 status = 127
                 result = "unsupport operation"

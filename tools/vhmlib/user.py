@@ -1,7 +1,7 @@
 import commands
+import os
 import pwd
 import sys
-import os
 
 
 class User:

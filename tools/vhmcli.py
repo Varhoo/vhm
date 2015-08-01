@@ -1,7 +1,8 @@
 
-from vhmlib.manager import manager
-from vhmlib.config import Config
 import sys
+
+from vhmlib.config import Config
+from vhmlib.manager import manager
 
 
 class Api:

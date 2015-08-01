@@ -25,17 +25,17 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import logging
+import errno
 import grp
+import logging
 import os
 import shlex
-import time
-import errno
 import sys
-from xml.etree.ElementTree import XMLParser
-from subprocess import Popen, PIPE, call
+import time
 from optparse import OptionParser
 from pwd import getpwnam
+from subprocess import PIPE, Popen, call
+from xml.etree.ElementTree import XMLParser
 
 UWSGIs_PATH = "/usr/local/bin/uwsgi"
 
