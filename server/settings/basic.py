@@ -87,7 +87,7 @@ SECRET_KEY = 'h*fq2k11@o$byy@j^633lszuzqijzc!(y^!0c=14z2@qhkif23'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#   'django.template.loaders.eggs.Loader',
+    #   'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,7 +113,7 @@ TEMPLATE_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#   'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 
@@ -165,4 +165,5 @@ FILEBROWSER_DIRECTORY = ""
 FILEBROWSER_MEDIA_URL = "/media/"
 
 TINYMCE_JS_URL = "/media/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js"
-TINYMCE_JS_ROOT = os.path.join(MEDIA_ROOT, "grappelli/tinymce/jscripts/tiny_mce")
+TINYMCE_JS_ROOT = os.path.join(
+    MEDIA_ROOT, "grappelli/tinymce/jscripts/tiny_mce")
