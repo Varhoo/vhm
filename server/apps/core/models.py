@@ -129,7 +129,7 @@ class Project(models.Model):
     owner = models.ForeignKey(User)
     site = models.CharField(max_length=126)
     path = models.CharField(max_length=126)
-    is_enabled = models.BooleanField(_('Is valid'))
+    is_enabled = models.BooleanField(_('Is valid'), default=True)
     created = models.DateTimeField(_('Created'), default=datetime.now)
     last_modify = models.DateTimeField(
         _('Last Modify'), default=datetime.now, blank=True)
@@ -169,12 +169,19 @@ class TemplateProc(models.Model):
     def __unicode__(self):
         return "%s" % self.title
 
+    class Meta:
+        verbose_name = _("Template for process")
+
 
 class ProjectProc(models.Model):
     project = models.ForeignKey(ProjectSetting)
     template = models.ForeignKey(TemplateProc)
     params = models.TextField(max_length=256, null=True, blank=True)
     is_running = models.BooleanField(_('Is running'), default=False)
+
+    class Meta:
+        verbose_name = _("Process")
+
 
     def __unicode__(self):
         return "%s: %s" % (self.project, self.template)

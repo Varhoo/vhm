@@ -141,18 +141,19 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'apps.core',
-    'apps.ticket',
+    # 'apps.ticket', # currently it is not developed
     'apps.svn_dav',
-    'apps.auth',
+    # 'apps.auth',
     'apps.consumer',
     'apps.xmlrpc',
     'apps.task_automatic',
     "apps.monitoring",
     "apps.client",
-    "south",
 )
 
-AUTH_PROFILE_MODULE = 'apps.auth.models.UserProfil'
+# AUTH_PROFILE_MODULE = 'apps.auth.models.UserProfil'
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 APACHE_GROUP = "webuser"
 
