@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 
 from models import *
+from signals import vhm_account_update, vhm_process_update, vhm_project_update
 
 
 class MultiDBModelAdmin(admin.ModelAdmin):
@@ -88,6 +89,12 @@ class AccountAdmin(admin.ModelAdmin):
         obj.owner = request.user
         obj.save()
 
+        if change:
+            vhm_account_update.send(
+                sender=Account, instance=obj, created=False)
+        else:
+            vhm_account_update.send(sender=Account, instance=obj, created=True)
+
 
 class ProjectProcAdmin(admin.ModelAdmin):
     list_display = ('project', "get_account",
@@ -100,6 +107,9 @@ class ProjectProcAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ("is_running", "get_raw_safe", "get_template")
+
+    def save_model(self, request, obj, form, change):
+        vhm_process_update.send(sender=ProjectProc, instance=obj)
 
 
 class ProjectSettingAdmin(admin.ModelAdmin):
@@ -115,6 +125,7 @@ class ProjectSettingAdmin(admin.ModelAdmin):
         return ProjectSetting.objects.filter(account__owner=request.user)
 
     def save_model(self, request, obj, form, change):
+        vhm_project_update.send(sender=ProjectSetting, instance=obj)
         obj.owner = request.user
         obj.save()
 

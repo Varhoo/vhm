@@ -182,7 +182,6 @@ class ProjectProc(models.Model):
     class Meta:
         verbose_name = _("Process")
 
-
     def __unicode__(self):
         return "%s: %s" % (self.project, self.template)
 

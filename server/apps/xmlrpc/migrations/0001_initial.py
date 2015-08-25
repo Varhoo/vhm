@@ -10,19 +10,22 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding model 'Action'
         db.create_table(u'xmlrpc_action', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')
+             (primary_key=True)),
             ('account', self.gf('django.db.models.fields.related.ForeignKey')
              (to=orm['apftpmy.Account'])),
             ('last_modify', self.gf('django.db.models.fields.DateTimeField')
              (default=datetime.datetime.now)),
             ('command', self.gf('django.db.models.fields.IntegerField')()),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('status', self.gf(
+                'django.db.models.fields.IntegerField')(default=0)),
         ))
         db.send_create_signal(u'xmlrpc', ['Action'])
 
         # Adding model 'ActionServer'
         db.create_table(u'xmlrpc_actionserver', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')
+             (primary_key=True)),
             ('server', self.gf('django.db.models.fields.related.ForeignKey')
              (to=orm['apftpmy.Server'])),
             ('last_modify', self.gf('django.db.models.fields.DateTimeField')
@@ -30,7 +33,8 @@ class Migration(SchemaMigration):
             ('command', self.gf('django.db.models.fields.IntegerField')()),
             ('args', self.gf('django.db.models.fields.TextField')
              (null=True, blank=True)),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
+            ('status', self.gf(
+                'django.db.models.fields.IntegerField')(default=0)),
             ('exit_code', self.gf('django.db.models.fields.IntegerField')
              (null=True, blank=True)),
         ))

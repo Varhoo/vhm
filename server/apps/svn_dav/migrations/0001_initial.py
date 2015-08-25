@@ -10,7 +10,8 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding model 'SvnRepository'
         db.create_table(u'svn_dav_svnrepository', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')
+             (primary_key=True)),
             ('name', self.gf('django.db.models.fields.SlugField')
              (unique=True, max_length=50)),
         ))
@@ -18,7 +19,8 @@ class Migration(SchemaMigration):
 
         # Adding model 'SvnGroup'
         db.create_table(u'svn_dav_svngroup', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')
+             (primary_key=True)),
             ('name', self.gf('django.db.models.fields.SlugField')
              (unique=True, max_length=50)),
         ))
@@ -26,10 +28,12 @@ class Migration(SchemaMigration):
 
         # Adding model 'SvnUserRights'
         db.create_table(u'svn_dav_svnuserrights', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')
+             (primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')
              (to=orm['auth.User'])),
-            ('rights', self.gf('django.db.models.fields.IntegerField')(default=1)),
+            ('rights', self.gf(
+                'django.db.models.fields.IntegerField')(default=1)),
             ('path', self.gf('django.db.models.fields.CharField')
              (default='/', max_length=255)),
             ('repository', self.gf('django.db.models.fields.related.ForeignKey')
