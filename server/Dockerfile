@@ -4,7 +4,7 @@ MAINTAINER "Pavel Studenik" <studenik@varhoo.cz>
 RUN apt-get update && apt install -y subversion python virtualenv gcc python-dev
 
 RUN mkdir -p /data/ && \
-    svn co http://github.com/Pajinek/vhm/trunk/server/ /data/vhm --non-interactive  --trust-server-cert
+    svn co https://github.com/Pajinek/vhm/trunk/server/ /data/vhm --non-interactive  --trust-server-cert
 
 WORKDIR /data/vhm
 RUN useradd -ms /bin/bash vhm \
