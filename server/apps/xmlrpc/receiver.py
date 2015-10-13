@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 def call(sender, action, instance, **kwargs):
     name = sender.__name__
     if not instance:
-        log.warning("action %s is not created - missing instance" %s str(name))
+        log.warning("action %s is not created - missing instance" % str(name))
         return
     command = "%s::%s::%s" % (str(name), action, int(instance.id))
 
