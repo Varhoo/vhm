@@ -109,6 +109,7 @@ class ProjectProcAdmin(admin.ModelAdmin):
     readonly_fields = ("is_running", "get_raw_safe", "get_template")
 
     def save_model(self, request, obj, form, change):
+        obj.save()
         vhm_process_update.send(sender=ProjectProc, instance=obj)
 
 
@@ -125,9 +126,9 @@ class ProjectSettingAdmin(admin.ModelAdmin):
         return ProjectSetting.objects.filter(account__owner=request.user)
 
     def save_model(self, request, obj, form, change):
-        vhm_project_update.send(sender=ProjectSetting, instance=obj)
         obj.owner = request.user
         obj.save()
+        vhm_project_update.send(sender=ProjectSetting, instance=obj)
 
 
 class DomainAdmin(admin.ModelAdmin):
