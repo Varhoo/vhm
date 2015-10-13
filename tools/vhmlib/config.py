@@ -1,5 +1,11 @@
-import ConfigParser
+#!/usr/bin/env python
+# coding: utf-8
+# author: Pavel Studenik
+# email: studenik@varhoo.cz
+# date: 5.10.2012
+
 import os
+import ConfigParser
 
 
 class Config:
@@ -38,12 +44,16 @@ class Config:
         self.smtp = self.get("smtp", "host", default=False)
 
     def create(self, path):
+        # default values from bash enviromen
+        vhm_server = os.environ.get("VHM_SERVER", "")
+        vhm_token = os.environ.get("VHM_TOKEN", "")
+
         config = ConfigParser.ConfigParser()
         config.add_section("client")
         config.add_section("webproject")
         config.add_section("smtp")
-        config.set("client", "token", "")
-        config.set("client", "server", "")
+        config.set("client", "token", vhm_token)
+        config.set("client", "server", vhm_server)
         config.set("client", "verbose", "0")
         config.set("client", "ssl_enable", "False")
         config.set("client", "monitoring", "False")

@@ -18,7 +18,6 @@ from socket import error as socket_error
 from user import User
 
 import psutil
-import requests
 import utils
 from manager import manager
 from repository import *
@@ -324,11 +323,6 @@ class ServerApp:
         print "result:", res[0]
         print "result:", res[1]
         return res[0]
-
-    def send_file(self, filepath):
-        r = requests.post(self.url, files={filepath: open(filepath, 'rb')})
-        # need use better  way to upload file
-        #self.rpc_srv.send_file( self.token, data)
 
 
 class MainServerApp:
