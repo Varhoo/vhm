@@ -20,10 +20,10 @@ def main(*argv):
     parser = OptionParser()
     parser.add_option(
         "-l",
-     "--list",
-     dest="list",
-     help="Print state of all apps",
-     action="store_true")
+        "--list",
+        dest="list",
+        help="Print state of all apps",
+        action="store_true")
 
     (options, args) = parser.parse_args()
 

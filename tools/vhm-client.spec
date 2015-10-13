@@ -1,7 +1,7 @@
 %define name vhm-client
-%define version 0.0.1
-%define unmangled_version 0.0.1
-%define unmangled_version 0.0.1
+%define version 0.0.2
+%define unmangled_version 0.0.2
+%define unmangled_version 0.0.2
 %define release 1
 
 Summary: Client for manage system and project VHM.

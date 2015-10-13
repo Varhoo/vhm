@@ -1,4 +1,6 @@
 
+all: autopep8 pip 
+
 autopep8:
 	find . -name "*.py"  | grep -e ^./vhmlib -e ^./[^/]*.py \
 	 | xargs autopep8 --in-place --aggressive --aggressive 

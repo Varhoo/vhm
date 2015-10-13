@@ -23,13 +23,25 @@ import utils
 from manager import manager
 from repository import *
 
-ENABLE_UWSGI_TAG = ['processes', 'chdir', 'uid', 'gid', 'pythonpath',
-                    'limit-as', 'optimize', 'daemonize', 'master', 'home', 'no-orphans',
-                    'pidfile', "wsgi-file", "socket"]
+ENABLE_UWSGI_TAG = [
+    'processes',
+    'chdir',
+    'uid',
+    'gid',
+    'pythonpath',
+    'limit-as',
+    'optimize',
+    'daemonize',
+    'master',
+    'home',
+    'no-orphans',
+    'pidfile',
+    "wsgi-file",
+    "socket"]
 
 ROOT_HTTPD = {
-    0: "./etc/apache2/sites-enabled/",  # site enable for debian
-    1: "./etc/httpd/conf.d/"  # site enable for fedora
+    0: "/etc/apache2/sites-enabled/",  # site enable for debian
+    1: "/etc/httpd/conf.d/"  # site enable for fedora
 }
 
 log = logging.getLogger(__name__)
@@ -89,7 +101,7 @@ def aray2xml(data):
     for proc in data:
         content.append("   <uwsgi id=\"%d\">" % proc["id"])
         for key, it in proc.iteritems():
-            if not key in ENABLE_UWSGI_TAG:
+            if key not in ENABLE_UWSGI_TAG:
                 continue
             if isinstance(it, bool):
                 content.append("      <%s/>" % key)
@@ -128,8 +140,8 @@ class ServerApp:
     def check_rights(self):
         result = self.rpc_srv.get_all_account(self.token)
         for it in result:
-            subprocess.call(
-                ['chown', '%s:%s' % (it["user"], self.conf.group), '-R', it["path"]])
+            subprocess.call(['chown', '%s:%s' %
+                             (it["user"], self.conf.group), '-R', it["path"]])
 
     def check_size_all(self):
         """
@@ -232,7 +244,7 @@ class ServerApp:
 
         for name, procs in data.items():
             for key, proc in procs.items():
-            # apache2 configuration
+                # apache2 configuration
                 if key == "1":
                     content = "\n".join([item[0] for item in proc])
                     filename = "%s%03d-%s" % (
@@ -306,7 +318,7 @@ class ServerApp:
             return data
         res = {
             0: lambda x: deb(x),
-           1: lambda x: rpm(x),
+            1: lambda x: rpm(x),
         }[srv](args)
 
         print "result:", res[0]
