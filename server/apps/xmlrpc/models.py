@@ -4,6 +4,7 @@
 # Email: studenik@varhoo.cz
 # Date: 10.2.2010
 
+import logging
 from datetime import date, datetime
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 
@@ -12,9 +13,12 @@ from django.db import models
 from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 
 from apps.core.models import *
 from apps.monitoring.models import *
+
+logger = logging.getLogger(__name__)
 
 STATUS_ENUM = (
     (0, "Waiting"),
@@ -30,6 +34,9 @@ class Action(models.Model):
     command = models.IntegerField()
     status = models.IntegerField(default=0)
 
+    def __unicode__(self):
+        return "%s" % seld.command
+
 
 class ActionServer(models.Model):
     server = models.ForeignKey(Server)
@@ -40,6 +47,9 @@ class ActionServer(models.Model):
     result = models.TextField(blank=True)
     exit_code = models.IntegerField(blank=True, null=True)
     last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
+
+    def __unicode__(self):
+        return "%s" % seld.command
 
 
 class SXD(SimpleXMLRPCDispatcher):
@@ -60,6 +70,46 @@ dispatcher = SXD(allow_none=True, encoding="utf8", )
 # FIXME - exists better way to save global ip from requirement
 ip = ""
 
+def rpc_get(request, id):
+    response = HttpResponse()
+    dirpath = default_storage.path('upload/%d/' % id)
+    files = sorted(os.listdir(dirpath), reverse=True)
+    for it in files[:1]:
+        response.write("%s\n" % it)
+    for it in files[9:]:
+        delete_file = os.path.join(dirpath, it)
+        os.remove(delete_file)
+    response['Content-length'] = str(len(response.content))
+    return response
+
+@csrf_exempt
+def rpc_push(request):
+    response = HttpResponse()
+
+    response.write("<h1>upload data</h1>")
+    response.write("curl -F upload_filename=@LICENSE http://localhost:8000/PUSH/")
+
+    if request.method == "GET":
+        return rpc_get(request, int(request.GET.get("id")))
+
+    if request.method == "POST":
+        token = request.POST.get("token")
+        server = check_auth_host(token)
+        if server:
+            current = datetime.now()
+            for filename, mem_file in request.FILES.items():
+                filepath = default_storage.path('upload/tmp/%s' % filename)
+                with open(filepath, 'wb+') as destination:
+                    for chunk in mem_file.chunks():
+                        destination.write(chunk)
+            new_file = "%s_%s.%s" % (current.date(), current.time(), filename.split(".")[-1])
+            logger.info("file %s was uploaded %s" % (new_file, datetime.now() - current))
+            new_file = default_storage.path('upload/%d/%s' % (server.id, new_file))
+            os.rename(filepath, new_file)
+        else:
+            response.write("<h2>Error: authorized token doesn't exist<h2>")
+    response['Content-length'] = str(len(response.content))
+    return response
 
 @csrf_exempt
 def rpc_handler(request):

@@ -13,7 +13,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
                        url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:],
                            'django.views.static.serve',
-                           {"document_root": settings.MEDIA_ROOT}),
+                           {"document_root": settings.MEDIA_ROOT, 'show_indexes': True}),
 
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL[1:],
                            'django.views.static.serve',
@@ -29,6 +29,7 @@ urlpatterns = patterns('',
                        (r'^admin/grappelli/', include('grappelli.urls')),
                        (r'^admin/filebrowser/', include(site.urls)),
                        # Uncomment the next line to enable the admin:
+                       (r'^PUSH/$', 'apps.xmlrpc.models.rpc_push'),
                        (r'^xmlrpc/$', 'apps.xmlrpc.models.rpc_handler'),
                        (r'^admin/', include(admin.site.urls)),
                        )
