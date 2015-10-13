@@ -35,7 +35,7 @@ class Action(models.Model):
     status = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return "%s" % seld.command
+        return "%s" % self.command
 
 
 class ActionServer(models.Model):
@@ -49,7 +49,7 @@ class ActionServer(models.Model):
     last_modify = models.DateTimeField(_('Last Modify'), default=datetime.now)
 
     def __unicode__(self):
-        return "%s" % seld.command
+        return "%s" % self.command
 
 
 class SXD(SimpleXMLRPCDispatcher):
